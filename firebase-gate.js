@@ -6,7 +6,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRe
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, collection, getDoc, setDoc, deleteDoc, onSnapshot, writeBatch }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const TEAM = ["David", "Champ", "Daniel", "Amalie", "Savan"];
+const TEAM = ["David", "Champ", "Daniel", "Amalie", "Savan", "Guest"];
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const gate = $("#gate"), body = $("#gateBody");

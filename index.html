@@ -263,8 +263,9 @@ window.FP_FIREBASE = true;
 <script>
 /* ---------- constants ---------- */
 const MEMBERS = ["David","Champ","Daniel","Amalie","Savan"];
-const COLORS = {David:["#0046c1","#bbff00"],Champ:["#1c1c1c","#bbff00"],Daniel:["#fe3d1e","#1c1c1c"],Amalie:["#27144c","#bbff00"],Savan:["#bbff00","#1c1c1c"]};
-const ROLES = {David:"Planning & approval",Champ:"Planning & approval",Daniel:"Teachers & DJs, material",Amalie:"Facebook & Instagram",Savan:"Picture & video editing"};
+const COLORS = {David:["#0046c1","#bbff00"],Champ:["#1c1c1c","#bbff00"],Daniel:["#fe3d1e","#1c1c1c"],Amalie:["#27144c","#bbff00"],Savan:["#bbff00","#1c1c1c"],Guest:["#f8f3e0","#1c1c1c"]};
+const ROLES = {David:"Planning & approval",Champ:"Planning & approval",Daniel:"Teachers & DJs, material",Amalie:"Facebook & Instagram",Savan:"Picture & video editing",Guest:"Guest access"};
+const ACCESS_PEOPLE = ["David","Champ","Daniel","Amalie","Savan","Guest"];
 const PLANNERS = ["David","Champ","Daniel","Amalie"];
 const STEPS = [
   {key:"plan",   label:"Plan confirmed",                 owner:"Planning team", who:PLANNERS, gate:[],          kind:"single", desc:"Date, guests and concept agreed"},
@@ -916,7 +917,7 @@ function openAccessSection(){
   const byName = {}; Object.entries(t.names||{}).forEach(([em,n])=>{ byName[n]=em; });
   openSheet(`<h2>🔐 Access</h2>
     <p class="meta">People sign in with Google and type the team PIN once per phone. Only these emails can get in.${admin?"":" Only the admin can change this."}</p>
-    ${MEMBERS.map(n=>`<label class="f">${n}</label><input class="in" type="email" data-accmail="${n}" value="${esc(byName[n]||"")}" ${admin?"":"disabled"} placeholder="name@gmail.com">`).join("")}
+    ${ACCESS_PEOPLE.map(n=>`<label class="f">${n}${n==="Guest"?` <span style="font-weight:400">– can use the app, has no role in the checklists</span>`:""}</label><input class="in" type="email" data-accmail="${n}" value="${esc(byName[n]||"")}" ${admin?"":"disabled"} placeholder="name@gmail.com">`).join("")}
     ${admin?`<button class="btn block" style="margin-top:12px" id="aSave">Save team emails</button>
     <label class="f" style="margin-top:18px">New team PIN (4–8 digits)</label><input class="in" id="aPin" inputmode="numeric" type="password" maxlength="8">
     <div class="hint">Changing the PIN asks everyone to type the new one – useful when someone leaves.</div>
@@ -1746,7 +1747,7 @@ document.addEventListener("click", async e => {
   if(act==="newGuest") openGuestForm();
   if(act==="startDemo") startDemo("all");
   if(act==="restartTour") startDemo(activeTourName);
-  if(act==="myTour"){ if(!me){ openWho(); return; } startDemo(me); }
+  if(act==="myTour"){ if(!me){ openWho(); return; } startDemo(MEMBERS.includes(me) ? me : "all"); }
   if(act==="hideTourHint"){ try{ localStorage.setItem("fp_tourhint_"+me,"1"); }catch(_){ } render(); }
   if(act==="exitDemo") exitDemo();
 });
