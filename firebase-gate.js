@@ -1,7 +1,7 @@
 // Fuse Point – Workflow · sign-in (Google + team PIN) and Firestore connection.
 // The app talks to the database through window.claude.use("db") – this file provides that.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut }
+import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserPopupRedirectResolver, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, collection, getDoc, setDoc, deleteDoc, onSnapshot, writeBatch }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -24,7 +24,8 @@ if (!cfg || !cfg.apiKey) {
 }
 
 const app = initializeApp(cfg);
-const auth = getAuth(app);
+// Remember the sign-in on this device (IndexedDB, with localStorage as backup)
+const auth = initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence], popupRedirectResolver: browserPopupRedirectResolver });
 const fs = initializeFirestore(app, { ignoreUndefinedProperties: true, localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
 let team = null, me = null;
 
@@ -68,7 +69,7 @@ function signInScreen(msg) {
     const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" });
     try { await signInWithPopup(auth, p); }
     catch (e) {
-      if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) { await signInWithRedirect(auth, p); }
+      if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) { try { sessionStorage.setItem("fp_redirect", "1"); } catch (_) {} await signInWithRedirect(auth, p); }
       else if (e && e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request") signInScreen("Sign-in didn't work: " + (e.code || e.message));
     }
   };
@@ -181,8 +182,14 @@ window.fpChangePin = async (pin) => {
   await b.commit();
 };
 
-getRedirectResult(auth).catch(e => signInScreen("Sign-in didn't work: " + (e.code || e.message)));
+// Only look for a redirect result if we actually started a redirect sign-in. Some browsers (e.g. Brave)
+// block Google's helper frame – that must never show the sign-in screen to someone who is already signed in.
+let redirecting = false; try { redirecting = sessionStorage.getItem("fp_redirect") === "1"; sessionStorage.removeItem("fp_redirect"); } catch (_) {}
+if (redirecting) getRedirectResult(auth).catch(e => { if (!auth.currentUser) signInScreen("Sign-in didn't work: " + (e.code || e.message)); });
+let lastUid;
 onAuthStateChanged(auth, user => {
-  if (!user) { window.__fpReady = false; if (document.body.classList.contains("in-demo")) return; signInScreen(); return; }
+  if (!user) { lastUid = null; window.__fpReady = false; if (document.body.classList.contains("in-demo")) return; signInScreen(); return; }
+  if (user.uid === lastUid && window.__fpReady) return; // token refresh – already in
+  lastUid = user.uid;
   check(user);
 });
