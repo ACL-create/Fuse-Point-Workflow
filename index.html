@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fuse Point – Workflow</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1c1c1c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fuse Point">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f8f3e0; --card:#fffdf6; --ink:#1c1c1c; --muted:#6b6658; --line:#e4dcc2; --soft:#efe7cc;
+  --orange:#fe3d1e; --lime:#bbff00; --blue:#0046c1; --purple:#27144c;
+  --ok:#1f7a3a; --warn:#a85d00; --late:#d42c10;
+  --radius:18px; --tourH:0px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;font-size:16px;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,.disp{font-family:"Unbounded",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+a{color:var(--blue)}
+.app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + var(--tourH) + 10px) 14px calc(env(safe-area-inset-bottom) + 100px)}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--ink);color:#fff;border-radius:22px;padding:10px 10px 10px 14px;margin-bottom:6px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;right:-40px;top:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--orange) 0,transparent 70%);opacity:.35;pointer-events:none}
+.brand{display:flex;align-items:center;gap:12px;z-index:1}
+.brand img{height:46px;width:auto;display:block}
+.brand .t1{font-family:"Unbounded";font-weight:800;font-size:15px;line-height:1.1}
+.brand .t2{font-size:12px;color:var(--lime);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.me{display:flex;align-items:center;gap:8px;border:none;background:var(--lime);color:var(--ink);border-radius:999px;padding:4px 12px 4px 4px;cursor:pointer;font-weight:700;font-size:14px;z-index:1}
+.av{width:28px;height:28px;border-radius:50%;display:inline-grid;place-items:center;font-weight:800;font-size:11px;flex:none;font-family:"Unbounded"}
+.av.sm{width:22px;height:22px;font-size:9px}
+img.av{object-fit:cover;display:inline-block;padding:0}
+.av.xl{width:84px;height:84px;font-size:26px}
+.photo-edit{display:flex;align-items:center;gap:14px;margin:14px 0 4px}
+.banner{background:#fff4c9;border:1.5px solid var(--ink);color:var(--ink);border-radius:14px;padding:10px 12px;font-size:14px;margin:10px 0}
+.section-title{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 10px;gap:8px}
+.section-title h2{font-size:16px;font-weight:800}
+.section-title span{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.card.alert{border-color:var(--orange);background:#fff1ec}
+.card.focus{border-color:var(--ink);box-shadow:4px 4px 0 var(--lime), 4px 4px 0 1.5px var(--ink)}
+.tap{cursor:pointer;transition:transform .08s ease}
+.tap:active{transform:scale(.985)}
+.ev{display:flex;gap:12px}
+.datebox{flex:none;width:54px;border-radius:14px;background:var(--ink);color:#fff;text-align:center;padding:7px 0}
+.datebox b{display:block;font-family:"Unbounded";font-size:20px;line-height:1.1}
+.datebox span{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--lime);font-weight:700}
+.ev-main{flex:1;min-width:0}
+.ev-title{font-weight:700;font-size:16px;margin:3px 0 2px;overflow-wrap:anywhere}
+.meta{color:var(--muted);font-size:13px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--purple);color:#fff;margin-right:4px;vertical-align:middle}
+.tag.workshop{background:var(--blue)}
+.tag.special{background:var(--orange)}
+.tag.plain{background:var(--soft);color:var(--ink)}
+.tag.late{background:var(--orange);color:#fff}
+.tag.soon{background:#ffd98a;color:#4a2c00}
+.tag.ok{background:var(--lime);color:var(--ink)}
+.tag.skip{background:var(--soft);color:var(--muted)}
+.tag.r-teacher{background:var(--ink);color:var(--lime)}
+.tag.r-dj{background:var(--lime);color:var(--ink)}
+.tag.r-guest{background:var(--purple);color:var(--lime)}
+.dots{display:flex;gap:4px;margin:12px 0 8px}
+.dots i{flex:1;height:7px;border-radius:4px;background:var(--line)}
+.dots i.done{background:var(--ink)}
+.dots i.open{background:var(--orange)}
+.dots i.skipped{background:repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px);border:1px solid var(--line)}
+.nextl{display:flex;flex-direction:column;gap:5px}
+.next{font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.next b{font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid var(--ink);border-radius:14px;padding:11px 16px;font-weight:700;cursor:pointer;background:var(--ink);color:#fff;text-decoration:none;min-height:46px;text-align:center}
+.btn.accent{background:var(--orange);border-color:var(--orange);color:#fff}
+.btn.lime{background:var(--lime);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.msg{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.small{min-height:36px;padding:6px 12px;font-size:14px;border-radius:11px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row > .btn{flex:1}
+.empty{text-align:center;color:var(--muted);padding:24px 16px;font-size:14px}
+.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+.seg{display:flex;background:var(--soft);border-radius:14px;padding:4px;gap:4px;margin-bottom:12px}
+.seg button{flex:1;border:none;background:transparent;border-radius:10px;padding:8px;font-weight:700;font-size:14px;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+.month{font-family:"Unbounded";font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:18px 4px 8px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;padding:0 10px calc(env(safe-area-inset-bottom) + 8px);display:flex;justify-content:center;z-index:20;pointer-events:none}
+nav.tabs .inner{display:flex;max-width:540px;width:100%;background:var(--ink);border-radius:22px;padding:6px;pointer-events:auto;box-shadow:0 6px 20px rgba(28,28,28,.25)}
+nav.tabs button{flex:1;border:none;background:none;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;font-weight:700;color:#bdb6a0;cursor:pointer;position:relative;border-radius:16px}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button.on{color:var(--ink);background:var(--lime)}
+.badge{position:absolute;top:0;left:calc(50% + 5px);background:var(--orange);color:#fff;font-size:10px;border-radius:999px;min-width:17px;height:17px;display:grid;place-items:center;padding:0 4px;border:2px solid var(--ink)}
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(28,28,28,.5);z-index:40;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s ease}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:calc(92vh - var(--tourH));overflow:auto;border-radius:24px 24px 0 0;padding:10px 16px calc(env(safe-area-inset-bottom) + 20px);animation:up .2s ease}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px;position:relative}
+.grab::before{content:"";position:absolute;left:-60px;right:-60px;top:-14px;bottom:-14px}
+.sheet{touch-action:pan-y;will-change:transform}
+.sheet h2{font-size:20px;font-weight:800;margin-bottom:4px;line-height:1.2}
+@keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+label.f{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:14px 0 6px}
+.in{width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 12px;min-height:46px;font-size:16px}
+.in:focus{outline:none;border-color:var(--ink)}
+textarea.in{min-height:84px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:14px;cursor:pointer;font-weight:500}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.new{border-style:dashed}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}
+.fbbox{background:var(--card);border:1.5px solid var(--blue);border-radius:16px;padding:12px;margin-top:8px}
+.fbbox h3{font-size:14px;color:var(--blue);display:flex;align-items:center;gap:6px}
+/* stepper */
+.steps{position:relative;margin:8px 0}
+.step{display:flex;gap:12px;position:relative;padding-bottom:16px}
+.step:not(:last-child)::before{content:"";position:absolute;left:15px;top:34px;bottom:0;width:2px;background:var(--line)}
+.step.done:not(:last-child)::before{background:var(--ink)}
+.sdot{flex:none;width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:var(--card);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--muted);z-index:1}
+.step.done .sdot{background:var(--ink);border-color:var(--ink);color:var(--lime)}
+.step.skipped .sdot{background:var(--soft);color:var(--muted)}
+.step.open .sdot{border-color:var(--orange);color:var(--orange);box-shadow:0 0 0 4px #ffd8cf}
+.sbody{flex:1;min-width:0}
+.step.open .sbody{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px;margin-top:-4px}
+.sname{font-weight:700}
+.sowner{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:2px;flex-wrap:wrap}
+.due{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
+.due input{border:1.5px solid var(--line);border-radius:8px;padding:5px 8px;background:var(--card);font-size:14px}
+.btn.resend{min-height:30px;padding:4px 12px;font-size:13px;margin-top:8px;border-color:var(--blue);color:var(--blue)}
+.linkbtn{background:none;border:none;color:var(--blue);font-weight:700;font-size:13px;padding:4px 0;cursor:pointer;text-decoration:underline}
+.cl{margin-top:8px}
+.cl .grp{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin:10px 0 2px;display:flex;align-items:center;gap:6px}
+.item{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px dashed var(--line)}
+.item:first-child{border-top:none}
+.cb{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--ink);background:var(--card);display:grid;place-items:center;cursor:pointer;font-weight:800;padding:0}
+.cb.on{background:var(--lime)}
+.cb:disabled{opacity:.5;cursor:default}
+.item .lbl{font-size:14px}
+.byline{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:3px}
+.byline .av.sm{width:18px;height:18px;font-size:8px}
+.item.done .lbl{text-decoration:line-through;color:var(--muted)}
+.item.skip .lbl{color:var(--muted)}
+.mini-link{background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;padding:2px}
+.note{background:#fff1ec;border-left:3px solid var(--orange);border-radius:8px;padding:8px 10px;font-size:13px;margin-top:8px}
+.guest{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.guest:first-child{border-top:none}
+.gi{width:38px;height:38px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-size:18px;flex:none}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + var(--tourH) + 14px);transform:translateX(-50%);background:var(--ink);color:var(--lime);font-weight:700;padding:10px 16px;border-radius:12px;font-size:14px;z-index:80;animation:fade .15s;max-width:90vw;text-align:center}
+.who{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;justify-content:center;padding:calc(var(--tourH) + 24px) 24px 24px;max-width:560px;margin:0 auto;overflow:auto}
+.who h2{font-size:26px;font-weight:800;margin-bottom:6px}
+.who .opt{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:8px;cursor:pointer;font-weight:700;font-size:17px;width:100%;text-align:left}
+.who .opt small{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.search{margin-bottom:10px}
+.danger{color:var(--late)}
+.srow{display:flex;align-items:center;gap:12px;width:100%;border:none;background:none;padding:12px 0;border-top:1px solid var(--line);cursor:pointer;font:inherit;color:inherit}
+.srow:first-child{border-top:none}
+.srow b{font-size:15px}
+.sicon{width:40px;height:40px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-size:19px;flex:none}
+.avrow{display:inline-flex;gap:3px;margin-top:3px}
+.ggroup{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:10px 12px 12px;margin-top:10px}
+.ghead{display:flex;justify-content:space-between;align-items:center;width:100%;border:none;background:none;padding:2px 0 6px;font-weight:700;font-size:15px;cursor:pointer}
+.gtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gtile{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:10px 4px 8px;text-align:center;cursor:pointer;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px}
+.gtile:active{transform:scale(.97)}
+.gtile b{font-size:12.5px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gtile small{font-size:10.5px;color:var(--muted);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gav{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:"Unbounded";font-weight:800;font-size:13px;margin-bottom:4px}
+.gav.r-teacher{background:var(--ink);color:var(--lime)}.gav.r-dj{background:var(--lime);color:var(--ink)}.gav.r-guest{background:var(--purple);color:var(--lime)}
+/* calendar */
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:2px 2px 12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat{border-radius:16px;padding:10px;text-align:center;color:#fff}
+.stat b{display:block;font-family:"Unbounded";font-size:22px}
+.stat span{font-size:12px;opacity:.85}
+.mhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.mhead h3{font-size:15px;font-weight:800}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.cal .wd{font-size:10px;font-weight:700;color:var(--muted);padding-bottom:2px}
+.cal .d{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;font-size:13px;border:none;background:none;padding:0;cursor:default}
+.cal .d.add{cursor:pointer}
+.cal .d.add:hover{background:var(--soft)}
+.cal .d.past{color:#c3bba2}
+.cal .d.today{box-shadow:inset 0 0 0 2px var(--ink);font-weight:700}
+.cal .d.has{color:#fff;font-weight:800;cursor:pointer}
+.cal .d.has.social{background:var(--purple)}
+.cal .d.has.workshop{background:var(--blue)}
+.cal .d.has.special{background:var(--orange)}
+.cal .d.has.past{opacity:.4}
+.mlist{margin-top:10px;border-top:1px solid var(--line);padding-top:6px}
+.mline{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:14px;cursor:pointer}
+.mline .when{width:52px;color:var(--muted);font-size:12px;flex:none}
+.mline .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.mini{display:flex;gap:2px;flex:none}
+.mini i{width:8px;height:8px;border-radius:2px;background:var(--line)}
+.mini i.done{background:var(--ink)}.mini i.open{background:var(--orange)}.mini i.skipped{background:var(--soft);outline:1px solid var(--line)}
+.gap{font-size:13px;color:var(--warn);font-weight:700;margin-top:8px}
+/* tour */
+#tour{position:fixed;top:0;left:0;right:0;z-index:70;display:flex;justify-content:center;padding:calc(env(safe-area-inset-top) + 8px) 10px 0;pointer-events:none}
+#tour .tc{pointer-events:auto;width:100%;max-width:560px;background:var(--purple);color:#fff;border-radius:20px;padding:12px 14px;box-shadow:0 8px 24px rgba(28,28,28,.3)}
+#tour .tk{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--lime)}
+#tour .tk button{background:none;border:none;color:#d7cdea;font-size:12px;font-weight:700;cursor:pointer;padding:2px 0;text-decoration:underline}
+#tour h3{font-size:15px;margin:5px 0 4px;line-height:1.25}
+#tour p{margin:0;font-size:14px;line-height:1.4;color:#efe9f8}
+#tour .tb{display:flex;gap:8px;margin-top:10px;align-items:center}
+#tour .tb .bar{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.18);overflow:hidden}
+#tour .tb .bar i{display:block;height:100%;background:var(--lime)}
+#tour .tb button{border:none;border-radius:11px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:14px}
+#tour .back{background:rgba(255,255,255,.14);color:#fff}
+#tour .nx{background:var(--lime);color:var(--ink)}
+#tour .strip{display:flex;align-items:center;gap:8px;font-size:13px}
+#tour .strip span{flex:1}
+#tour .strip button{background:rgba(255,255,255,.14);color:#fff;border:none;border-radius:9px;padding:6px 10px;font-weight:700;font-size:13px;cursor:pointer}
+#splash{position:fixed;inset:0;z-index:100;background:var(--ink);display:grid;place-items:center;perspective:700px;animation:splashOut .35s ease 1.1s forwards}
+#splash img{width:132px;height:auto;animation:logoSpin 1s cubic-bezier(.3,.1,.2,1) both}
+@keyframes logoSpin{0%{transform:rotateY(-360deg) scale(.7);opacity:0}25%{opacity:1}100%{transform:rotateY(0) scale(1);opacity:1}}
+@keyframes splashOut{to{opacity:0;visibility:hidden}}
+@media (prefers-reduced-motion: reduce){#splash img{animation:none}#splash{animation:splashOut .3s ease .4s forwards}}
+
+.gate{position:fixed;inset:0;z-index:90;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 20px) 20px calc(env(safe-area-inset-bottom) + 20px);overflow:auto}
+.gate[hidden]{display:none}
+.gbox{width:100%;max-width:380px;text-align:center}
+.glogo{width:110px;height:auto;display:block;margin:0 auto 10px}
+.gt1{font-family:"Unbounded";font-weight:800;font-size:20px}.gt2{color:var(--lime);font-weight:700;letter-spacing:.12em;font-size:12px;margin-bottom:22px}
+.gmsg{color:#e9e4d4;font-size:15px;line-height:1.45;margin:0 0 16px}.gsmall{color:#bdb6a0;font-size:13px}
+.gerr{color:#ff9b8a;font-size:14px;min-height:1px;margin:6px 0 10px}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:50px;border-radius:14px;border:none;background:var(--lime);color:var(--ink);font-weight:800;font-size:16px;cursor:pointer;margin-top:10px;font-family:inherit}
+.gbtn.ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.25);font-weight:700}
+.gbtn:disabled{opacity:.5}
+.glabel{display:block;text-align:left;font-size:13px;font-weight:700;color:#bdb6a0;margin:12px 0 5px}
+.gin{width:100%;min-height:46px;border-radius:12px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;padding:10px 12px;font:inherit;font-size:16px}
+.gin.gpin{text-align:center;font-size:28px;letter-spacing:.4em;font-family:"Unbounded"}
+</style>
+</head>
+<body>
+<div id="splash" aria-hidden="true"><img src="icons/logo-white.png" alt=""></div>
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand"><img src="icons/logo-white.png" alt="Fuse Point"><div><div class="t1">Fuse Point</div><div class="t2">Workflow</div></div></div>
+    <button class="me" id="meBtn" type="button"></button>
+  </header>
+  <div id="status"></div>
+  <main id="view"></main>
+</div>
+<nav class="tabs"><div class="inner" id="tabs"></div></nav>
+<div id="layer"></div>
+<div id="tour"></div>
+
+<div id="gate" class="gate"><div class="gbox"><img src="icons/logo-white.png" class="glogo" alt="Fuse Point"><div class="gt1">Fuse Point</div><div class="gt2">WORKFLOW</div><div id="gateBody"><p class="gmsg">Loading…</p></div></div></div>
+<script src="config.js"></script>
+<script>
+window.FP_FIREBASE = true;
+(function(){ var res; var p = new Promise(function(r){ res = r; }); window.__fpResolveDb = res;
+  window.claude = { use: async function(n){ return n==="db" ? p : n==="user" ? { can: async function(){ return true; } } : null; } }; })();
+</script>
+<script>
+/* ---------- constants ---------- */
+const MEMBERS = ["David","Champ","Daniel","Amalie","Savan"];
+const COLORS = {David:["#0046c1","#bbff00"],Champ:["#1c1c1c","#bbff00"],Daniel:["#fe3d1e","#1c1c1c"],Amalie:["#27144c","#bbff00"],Savan:["#bbff00","#1c1c1c"]};
+const ROLES = {David:"Planning & approval",Champ:"Planning & approval",Daniel:"Teachers & DJs, material",Amalie:"Facebook & Instagram",Savan:"Picture & video editing"};
+const PLANNERS = ["David","Champ","Daniel","Amalie"];
+const STEPS = [
+  {key:"plan",   label:"Plan confirmed",                 owner:"Planning team", who:PLANNERS, gate:[],          kind:"single", desc:"Date, guests and concept agreed"},
+  {key:"collect",label:"Teachers & DJs: collect material",owner:"Daniel",       who:["Daniel"], gate:["plan"],    kind:"list",   desc:"Guests upload pictures & videos to their Drive folder"},
+  {key:"edit",   label:"Edit pictures & videos",          owner:"Savan",        who:["Savan"],  gate:["collect"], kind:"list",   desc:"Make the promo material"},
+  {key:"approve",label:"Approve material",                owner:"Anyone",       who:MEMBERS,    gate:["edit"],    kind:"approve",desc:"Approve, or send back to Savan with changes"},
+  {key:"post",   label:"Facebook, Instagram & WhatsApp",  owner:"Amalie",       who:["Amalie"], gate:["plan"],    kind:"list",   desc:"No need to wait for approval – tick things off in your own order"}
+];
+const SIDX = Object.fromEntries(STEPS.map((s,i)=>[s.key,i]));
+const DEFAULT_TPL = {
+  collect:["Contacted teachers & DJs","Shared upload folder link","All pictures & videos received"],
+  edit:["Promo pictures edited","Promo video edited"],
+  post:["Facebook: Event created","Facebook: Promo pictures & video added","Instagram: Feed post","Instagram: Story","WhatsApp: Shared in the event group"]
+};
+const TYPES = {workshop:"Workshop",social:"Social",special:"Special community event"};
+const DUE_OFF = {plan:-42, collect:-28, edit:-21, approve:-18, post:-14};
+const FB_PAGE = "https://www.facebook.com/fusepoint1/", IG_PAGE = "https://www.instagram.com/fuse_point/";
+const DRIVE = "https://drive.google.com/drive/folders/1cTAUnQvaOZAKVGK9Gf48pN5z_wYNwBB1?usp=drive_link";
+const WA_GROUP = "https://chat.whatsapp.com/Hk6grArApK23C65tdKWKwY";
+const DEFAULT_START = "14:00", DEFAULT_END = "17:00";
+const DEFAULT_GENRES = ["House","Hiphop","Poppin","Lockin","Wavin","Funk"];
+const TITLE_RE = /^Fuse Point Jam\/\/ Open workshop w\/.*and open floor w\/.*$/;
+const titleFor = (T, D) => `Fuse Point Jam// Open workshop w/ ${T.length?T.join(" & ")+" ":""}and open floor w/ ${D.join(" & ")}`;
+const DEFAULT_WHERE = "Nørre Allé 7, 2200 København, First Floor (AULA)";
+const DEFAULT_DESC = `Program:
+14:00-15:00 Beginner friendly house dance workshop with:
+15:00-17:00 Jam & open dance floor with:
+Where: Nørre Allé 7, 2200 København First Floor (AULA)
+Price:
+Workshop & jam 60 kr.
+Jam 30 kr.
+(Mobilepay and Cash Only)
+
+🔻🔻🔻
+
+
+🔻🔻🔻
+
+
+Fuse Point:
+(ENG)
+Welcome to Fuse Point:
+We aim to support members of the dance and music culture and ensure a safe and positive space. We want to create a space where you meet each other with openness in a natural and relaxed setting.
+We also want to create a deeper understanding and recognition of the positive under-represented elements that these urban and street culture contain. We have therefore set up a guideline for participation in our activities.
+Come with an open mind and give the space to others that you yourself wants to be given to you.
+We do not tolerate any form of discrimination, sexism, racism, homophobia, or transphobia.
+It is not allowed to consume or bring alcohol or other narcotics to our activities.
+We ask you not to take pictures of other participants without permission. Our in-house photographer will take care of that. If you do not want to participate in photos / videos, let us know before you participate in the activity.
+We strongly believe that communities, togetherness, inclusion, and understanding flourish best when people, regardless of age, gender, nationality, and skills, can meet in a creative environment.
+(DK)
+Velkommen til Fuse Point:
+Vi har til formål at støtte op om medlemmer i danse- og musikkulturen, og sørge for et trygt og positivt rum. Vi ønsker at skabe et rum, hvor man møder hinanden med åbenhed i en naturlig og afslappet ramme.
+Vi ønsker ligeledes at skabe dybere forståelse og anerkendelse af de positive og underrepræsenterede elementer som disse miljøer rummer i sig. Vi har derfor opsat en guideline for deltagelse til vores aktiviteter.
+Kom med åbent sind, og giv den plads til andre som du selv ønsker givet til dig.
+Vi tolererer ikke nogen form for diskrimination, sexisme, racisme, homofobi eller transfobi.
+Det er ikke tilladt at indtage eller medbringe alkohol eller andre euforiserende stoffer til vores aktiviteter.
+Vi beder dig om ikke at tage billeder af andre deltager uden tilladelse. Det vil vores interne fotograf tage sig af. Hvis du ikke ønsker at være med i billeder/videoer, så lad os vide det, før du deltager i aktiviteten.
+Vi har stærkt tiltro til at fællesskaber, sammenhold, inkludering, og forståelse bedst blomster når mennesker uanset alder, køn, nationalitet og færdigheder får mulighed for at mødes i et kreativt miljø.`;
+const DEFAULT_MSG = {
+  teacher: `Hey {guest}! 🙌
+We're so happy to have you teaching the workshop at Fuse Point.
+We'll like to ask you for promo material to use them to promote the event. Thank you!
+1. Bio - Send a bio about yourself or how you like to teach. It doesn't have to be long. Just send it on text here in chat.
+2. Links - If you have links for your SoMe or any platform you want to promote. Just send it with Bio.
+3. Pictures & Videos - Could you upload a few pictures and a short video of you dancing here:
+{folder}`,
+  dj: `Hey {guest}! 🎧
+We're so excited to have you on the decks at Fuse Point.
+We'll like to ask you for promo material to use them to promote the event. Thank you!
+1. Bio - Send a bio about yourself, your music and your style as a DJ. It doesn't have to be long. Just send it on text here in chat.
+2. Links - If you have links for your SoMe, SoundCloud, Mixcloud or any platform you want to promote. Just send it with Bio.
+3. Pictures & Videos - Could you upload a few pictures and a short video or clip of you playing here:
+{folder}`,
+  guest: `Hey {guest}! ⭐
+We're so looking forward for you attending at Fuse Point.
+We'll like to ask you for promo material to use them to promote the event. Thank you!
+1. Bio - Send a bio about yourself and a few lines about what you'll share with us – your talk, panel, lecture or workshop. It doesn't have to be long. Just send it on text here in chat.
+2. Links - If you have links for your SoMe, website, projects or any platform you want to promote. Just send it with Bio.
+3. Pictures & Videos - Could you upload a few pictures of yourself, and a short video if you have one, here:
+{folder}`,
+  group: `{event}
+📅 {date} · {time}
+📍 {where}
+{lineup}
+Price:
+Workshop & jam 60 kr.
+Jam 30 kr.
+(Mobilepay and Cash Only)
+
+Beginner friendly workshop + jam & open dance floor. Everyone is welcome! 🪩
+
+👉 {fb}`
+};
+
+/* ---------- state ---------- */
+let db = null, realDb = null, canWrite = true, realCanWrite = true;
+const realData = {events:[],guests:[],settings:{},photos:{},loaded:false};
+let demoData = null, demoDb = null, demo = false, tourIdx = -1, focusId = null, activeTour = null, activeTourName = "all";
+let events = [], guests = [], settings = {}, photos = {};
+let tab = "tasks", evFilter = "upcoming", guestQuery = "", guestSort = "az", guestRole = "all";
+const guestFold = new Set(), guestOpen = new Set();
+let me = null, realMe = null;
+try{ me = localStorage.getItem("fp_me"); }catch(e){}
+if(!MEMBERS.includes(me)) me = null;
+let statusMsg = "";
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ds = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const todayStr = () => ds(new Date());
+const parseD = s => { if(!s) return null; const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); };
+const fmt = (s,o={day:"numeric",month:"short"}) => s ? parseD(s).toLocaleDateString("en-GB",o) : "";
+const fmtLong = s => fmt(s,{weekday:"short",day:"numeric",month:"long"});
+const daysUntil = s => Math.round((parseD(s) - parseD(todayStr()))/86400000);
+const addDays = (s,n) => { const d=parseD(s); d.setDate(d.getDate()+n); return ds(d); };
+const av = (n,sm,xl) => { const c=COLORS[n]||["#888","#fff"]; const cls=`av${sm?" sm":""}${xl?" xl":""}`; const ph=photos[n];
+  return ph && /^data:image\//.test(ph) ? `<img class="${cls}" src="${esc(ph)}" alt="${esc(n)}">` : `<span class="${cls}" style="background:${c[0]};color:${c[1]}">${esc((n||"?").slice(0,2))}</span>`; };
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const slug = s => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60) || "item";
+const tagsFor = names => names.map(n=>"@"+n).join(" ");
+function toast(t){ const el=document.createElement("div"); el.className="toast"; el.textContent=t; document.body.appendChild(el); setTimeout(()=>el.remove(),2400); }
+
+/* ---------- checklists ---------- */
+function parseLine(line){
+  let parts = line.split(":").map(s=>s.trim()).filter(Boolean);
+  let owner=null, group=null;
+  if(parts.length>1 && (MEMBERS.includes(parts[0]) || parts[0]==="Team")) owner = parts.shift();
+  if(parts.length>1) group = parts.shift();
+  return {id:slug(line), label:parts.join(": "), group, owner};
+}
+function items(key){
+  const lines = (settings.templates && Array.isArray(settings.templates[key]) && settings.templates[key].length) ? settings.templates[key] : DEFAULT_TPL[key];
+  return (lines||[]).map(parseLine);
+}
+const itemOwners = (it, s) => it.owner==="Team" ? MEMBERS : it.owner ? [it.owner] : s.who;
+const itemState = (ev, key, id) => ev.steps?.[key]?.items?.[id]?.s || "";
+
+/* ---------- step logic ---------- */
+function stepState(ev, k){
+  const s = STEPS[k], st = ev.steps?.[s.key] || {};
+  if(st.skipped) return "skipped";
+  if(st.done) return "done";
+  return gatesOk(ev, s) ? "open" : "locked";
+}
+function gatesOk(ev, s){
+  return s.gate.every(g => {
+    if(g==="@date") return ev.date <= todayStr();
+    const gs = stepState(ev, SIDX[g]);
+    if(gs==="done") return true;
+    if(gs==="skipped") return gatesOk(ev, STEPS[SIDX[g]]);
+    return false;
+  });
+}
+const allDone = ev => STEPS.every((_,k)=>["done","skipped"].includes(stepState(ev,k)));
+const openSteps = ev => STEPS.map((s,k)=>k).filter(k=>stepState(ev,k)==="open");
+function myRole(ev, k, name){ // returns "mine" | "team" | null
+  const s = STEPS[k];
+  if(s.kind==="list"){
+    const its = items(s.key).filter(it => !itemState(ev,s.key,it.id) && itemOwners(it,s).includes(name));
+    if(!its.length) return null;
+    return its.some(it => itemOwners(it,s).length===1) ? "mine" : "team";
+  }
+  if(!s.who.includes(name)) return null;
+  return s.who.length===1 ? "mine" : "team";
+}
+const stuckDays = () => Math.max(1, Number(settings.stuckDays ?? 2) || 2);
+const overdueBy = (ev,k) => { const d = ev.steps?.[STEPS[k].key]?.due; return d ? -daysUntil(d) : -999; };
+const stuckSteps = ev => openSteps(ev).filter(k => overdueBy(ev,k) >= stuckDays());
+const isStuck = ev => stuckSteps(ev).length>0;
+const isTeacher = g => g && g.role!=="dj" && g.role!=="other";
+const gname = g => (g && (g.artist||"").trim()) || g?.name || "";
+const guestNames = ev => (ev.guestIds||[]).map(id => gname(guests.find(g=>g.id===id))).filter(Boolean);
+const typeTag = ev => ev.type==="special" ? `<span class="tag special">Special</span>` : ev.type==="workshop" ? `<span class="tag workshop">Workshop</span>` : `<span class="tag">Social</span>`;
+function dueInfo(ev,k){
+  const due = ev.steps?.[STEPS[k].key]?.due; if(!due) return null;
+  const n = daysUntil(due);
+  if(n<0) return {cls:"late",txt:`${-n}d overdue`};
+  if(n===0) return {cls:"soon",txt:"due today"};
+  if(n<=3) return {cls:"soon",txt:`due in ${n}d`};
+  return {cls:"plain",txt:`due ${fmt(due)}`};
+}
+function progressOf(ev,k){
+  const s = STEPS[k]; if(s.kind!=="list") return "";
+  const its = items(s.key); const n = its.filter(it=>itemState(ev,s.key,it.id)).length;
+  return `${n}/${its.length}`;
+}
+
+/* ---------- data ---------- */
+function subscribe(dbx, target, isDemo){
+  const apply = () => { if(demo === isDemo){ events=target.events; guests=target.guests; settings=target.settings; photos=target.photos||{}; render(); refreshSheet(); } };
+  const loadTimer = isDemo ? null : setTimeout(()=>{ if(!target.loaded){ statusMsg="Can't reach the shared data yet – check your connection."; render(); } }, 10000);
+  dbx.collection("events").onSnapshot(snap => {
+    target.events = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    if(!snap.metadata.fromCache){ clearTimeout(loadTimer); if(!isDemo && statusMsg.startsWith("Can't")) statusMsg=""; }
+    target.loaded = true; apply();
+  }, () => { clearTimeout(loadTimer); if(!isDemo){ statusMsg="Lost connection to the shared data. Reload later to see updates."; target.loaded=true; apply(); } });
+  dbx.collection("guests").onSnapshot(snap => {
+    target.guests = snap.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+    apply();
+  }, ()=>{});
+  dbx.doc("settings/main").onSnapshot(s => { target.settings = s.exists ? s.data() : {}; apply(); }, ()=>{});
+  dbx.collection("members").onSnapshot(snap => { const ph={}; snap.docs.forEach(d=>{ const v=d.data(); if(v && v.photo) ph[d.id]=v.photo; }); target.photos=ph; apply(); }, ()=>{});
+}
+async function initDb(){
+  try{ realDb = await claude.use("db"); }catch(e){ realDb = null; }
+  if(!realDb){ statusMsg="Open this page signed in on claude.ai to see and update the team's data. You can still try the demo under Settings."; realData.loaded=true; if(!demo){ canWrite=false; render(); } return; }
+  try{
+    const user = await claude.use("user");
+    if(user && user.can){ const w = await user.can("data.write"); if(w===false) realCanWrite=false; }
+  }catch(e){}
+  if(!demo){ db = realDb; canWrite = realCanWrite; }
+  subscribe(realDb, realData, false);
+}
+async function write(fn){
+  if(!db || !canWrite){ toast("You can't edit right now"); return false; }
+  try{ await fn(); return true; }
+  catch(e){
+    if(e && e.code==="invalid_argument"){ if(!demo){ canWrite=realCanWrite=false; render(); } toast("You don't have edit access"); }
+    else if(e && e.code==="unavailable"){ await new Promise(r=>setTimeout(r,600+Math.random()*600)); try{ await fn(); return true; }catch(_){ toast("Couldn't save – try again"); } }
+    else toast("Couldn't save – try again");
+    return false;
+  }
+}
+
+/* ---------- messages ---------- */
+function appLine(){ return settings.appLink ? `\n👉 ${settings.appLink}` : ""; }
+function driveLink(){ return settings.driveLink || DRIVE; }
+const waGroup = () => settings.waGroup || WA_GROUP;
+const msgTpl = k => (settings.msgTemplates && settings.msgTemplates[k]) || DEFAULT_MSG[k];
+const timeRange = ev => ev.time ? (ev.endTime ? `${ev.time}–${ev.endTime}` : ev.time) : "";
+function lineup(ev){
+  const gs = (ev.guestIds||[]).map(id=>guests.find(g=>g.id===id)).filter(Boolean);
+  const t = gs.filter(g=>isTeacher(g)).map(gname), d = gs.filter(g=>g.role==="dj").map(gname);
+  return [t.length?`💃 Teacher: ${t.join(", ")}`:"", d.length?`🎧 DJ: ${d.join(", ")}`:""].filter(Boolean).join("\n");
+}
+const LINK_FIELDS = [["📸 Instagram","instagram"],["📘 Facebook","facebook"],["☁️ SoundCloud","soundcloud"],["▶️ YouTube","youtube"],["🌐 Website","website"]];
+function personBlock(g){
+  const out = [gname(g)];
+  if((g.bio||"").trim()) out.push(g.bio.trim());
+  const links = LINK_FIELDS.filter(([,k])=>(g[k]||"").trim()).map(([l,k])=>`${l}: ${g[k].trim()}`);
+  if(links.length) out.push(links.join("\n"));
+  return out.join("\n");
+}
+// teachers / djs: arrays of guest objects (or plain names)
+function namesIntoDesc(text, teachers, djs){
+  const toG = x => typeof x==="string" ? {name:x} : x;
+  teachers = teachers.map(toG); djs = djs.map(toG);
+  const T = teachers.map(gname).join(" & "), D = djs.map(gname).join(" & ");
+  const isMarker = l => /^\s*(🔻)+\s*$/u.test(l);
+  const isEnd = l => /^\s*(Fuse Point:|\((ENG|DK)\)|Welcome to Fuse Point|Velkommen til Fuse Point)/i.test(l);
+  const lines = String(text||"").split("\n"); const out = []; let marker = 0, i = 0, m;
+  while(i < lines.length){
+    const line = lines[i];
+    if(isMarker(line) && marker===0){
+      marker++;
+      // replace the whole artist area (all 🔻 blocks) up to the Fuse Point text
+      while(i < lines.length && !isEnd(lines[i])) i++;
+      const slots = [...(teachers.length ? teachers : [null]), ...(djs.length ? djs : [null])];
+      slots.forEach(g => { out.push(line.trim()); out.push(g ? personBlock(g) : ""); out.push(""); });
+      continue;
+    }
+    if((m = line.match(/^(.*workshop[^:]*with:)(.*)$/i))) out.push(T ? `${m[1]} ${T}` : m[1]);
+    else if((m = line.match(/^(.*(?:jam|dance floor)[^:]*with:)(.*)$/i))) out.push(D ? `${m[1]} ${D}` : m[1]);
+    else out.push(line);
+    i++;
+  }
+  return out.join("\n");
+}
+const descTpl = () => settings.descTemplate || DEFAULT_DESC;
+async function saveSettings(patch){ const cur = {...settings}; return write(()=>db.doc("settings/main").set({...cur, ...patch})); }
+function fillTpl(tpl, ev, g){
+  ev = ev || {};
+  const map = {guest:g?.name||"", event:ev.title||"our event", date:ev.date?fmtLong(ev.date):"", time:timeRange(ev), where:ev.location||DEFAULT_WHERE, folder:driveLink(), fb:fbPage(), ig:igPage(), lineup:lineup(ev)};
+  return tpl.replace(/\{(\w+)\}/g, (m,k)=> k in map ? map[k] : m).replace(/\n{3,}/g,"\n\n");
+}
+const fbPage = () => settings.fbPage || FB_PAGE, igPage = () => settings.igPage || IG_PAGE;
+function lineupParts(ev){
+  const gs = (ev.guestIds||[]).map(id=>guests.find(g=>g.id===id)).filter(Boolean);
+  return {T: gs.filter(g=>isTeacher(g)).map(gname), D: gs.filter(g=>g.role==="dj").map(gname)};
+}
+function withLine(ev){
+  const {T,D} = lineupParts(ev);
+  if(T.length && D.length) return `\nw/ ${T.join(" & ")} and open floor w/ ${D.join(" & ")}.`;
+  if(T.length) return `\nw/ ${T.join(" & ")}.`;
+  if(D.length) return `\nopen floor w/ ${D.join(" & ")}.`;
+  return "";
+}
+function msgAfter(ev, key){
+  const d = fmtLong(ev.date);
+  const w = withLine(ev);
+  const drive = `• Pictures are in Drive folder "Guest - Pictures & Videos"\n${driveLink()}`;
+  const skipCollect = ev.steps?.collect?.skipped;
+  switch(key){
+    case "plan": return skipCollect
+      ? `${tagsFor(["Savan","Amalie"])}\nDate is confirmed! ${d}${w}\n\n• Savan – you can start on the promo material.\n• Amalie – you can create the Facebook event now.`
+      : `${tagsFor(["Daniel","Amalie"])}\nDate is confirmed! ${d}${w}\n\n• Daniel – please contact the guests and collect bio, pictures & videos.\n• Amalie – you can create the Facebook event now.`;
+    case "collect": return `${tagsFor(["Savan"])}\nAll pictures for ${d}${w}\nIt's in – ready for editing.\n\n${drive}`;
+    case "edit": return `${tagsFor(MEMBERS.filter(n=>n!=="Savan" && n!==me))}\nPictures edited! ${d}${w}\n\n• Can one of you take a look and approve?\n${drive}`;
+    case "approve": return `${tagsFor(["Amalie"])}\nPromo material ready! ${d}${w}\n\n• Ready for Facebook & Instagram!\n${drive}`;
+    case "post": { const {T,D} = lineupParts(ev); const name = (T.length||D.length) ? titleFor(T,D) : ev.title;
+      return `🎉 ${name} ${d} is live on Facebook, Instagram & the WhatsApp group! Please share it 💃🕺\n📘 ${fbPage()}\n📸 ${igPage()}`; }
+  }
+}
+function msgSendBack(ev, note){
+  return `${tagsFor(["Savan"])}\n↩️ Small changes for ${ev.title} (${fmtLong(ev.date)}) before we approve:\n“${note}”${driveLink(ev)?`\n📁 ${driveLink(ev)}`:""}${appLine()}`;
+}
+function msgReminder(ev, k){
+  k = k ?? (stuckSteps(ev)[0] ?? openSteps(ev)[0]);
+  const s = STEPS[k]; const due = ev.steps?.[s.key]?.due;
+  let who = s.who;
+  if(s.kind==="list"){ const open = items(s.key).filter(it=>!itemState(ev,s.key,it.id)); who=[...new Set(open.flatMap(it=>itemOwners(it,s)))]; }
+  const late = due && daysUntil(due) < 0;
+  return `${tagsFor(who)}\n⏰ Friendly reminder: "${s.label}" for ${ev.title} (${fmtLong(ev.date)})${due?(late?` was due ${fmt(due)}`:` is due ${fmt(due)}`):" is waiting"}. Anything you need help with?${appLine()}`;
+}
+const roleKey = g => g.role==="dj" ? "dj" : g.role==="other" ? "guest" : "teacher";
+const roleLabel = g => g.role==="dj" ? "DJ" : g.role==="other" ? "Guest" : "Teacher";
+const roleIcon = g => g.role==="dj" ? "🎧" : g.role==="other" ? "⭐" : "💃";
+function msgGuest(g, ev){ return fillTpl(msgTpl(roleKey(g)), ev, g); }
+function msgGroup(ev){ return fillTpl(msgTpl("group"), ev); }
+const waUrl = (text, phone) => `https://wa.me/${phone?String(phone).replace(/[^\d]/g,""):""}?text=${encodeURIComponent(text)}`;
+async function copyText(t, okMsg){
+  try{ await navigator.clipboard.writeText(t); toast(okMsg||"Copied"); return true; }
+  catch(e){ toast("Select the text and copy it"); return false; }
+}
+const MSG_ICON = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.4 2 2 6.1 2 11.6c0 2.9 1.2 5.4 3.2 7.1V22l3-1.7c1.2.3 2.4.5 3.8.5 5.6 0 10-4.1 10-9.6S17.6 2 12 2Zm1 12.9-2.5-2.7-5 2.7 5.5-5.8 2.6 2.7 4.9-2.7-5.5 5.8Z"/></svg>`;
+
+function openNotify(title, text, opt={}){
+  const guest = opt.guest;
+  const group = settings.messengerLink || "";
+  const igHandle = (guest?.instagram||"").trim().replace(/^https?:\/\/(www\.)?instagram\.com\//i,"").replace(/[\/?#].*$/,"").replace(/^@/,"");
+  const ig = igHandle ? `https://ig.me/m/${encodeURIComponent(igHandle)}` : "";
+  const folder = guest ? driveLink() : "";
+  openSheet(`
+    <h2>${esc(title)}</h2>
+    <p class="meta">${guest?`Ready-to-send message for ${guest.role==="dj"?"a DJ":guest.role==="other"?"a guest":"a teacher"}. Edit it here, or change the saved template (tap your name at the top).`:opt.wa?"Ready for the WhatsApp event group. Edit it here, or change the saved template (tap your name at the top).":"Ready for the team's Messenger group. Edit it if you like."}</p>
+    <textarea class="in" id="nText" style="min-height:160px">${esc(text)}</textarea>
+    ${opt.wa ? `
+      <a class="btn wa block" style="margin-top:12px;background:#1FAF55;border-color:#1FAF55;color:#fff" id="nWaGroup" href="${esc(waGroup())}" target="_blank" rel="noopener">Copy & open WhatsApp group</a>
+      <button class="btn ghost block" id="nCopy" style="margin-top:8px">Copy only</button>
+      <p class="hint">The message is copied – paste it in the group and send.</p>
+      <button class="btn ghost small" data-editprofile="Amalie" style="margin-top:4px">✏️ Edit template</button>`
+    : guest ? `
+      <div class="row" style="margin-top:12px">
+        <button class="btn msg" id="nCopy">${MSG_ICON} Copy message</button>
+        ${folder?`<button class="btn lime" id="nFolder">📁 Copy folder link</button>`:""}
+      </div>
+      <div class="row" style="margin-top:8px">
+        ${ig?`<a class="btn small" href="${esc(ig)}" target="_blank" rel="noopener" id="nIg" style="border:none;color:#fff;background:linear-gradient(45deg,#feda75 0%,#fa7e1e 25%,#d62976 50%,#962fbf 75%,#4f5bd5 100%)">📸 Open Instagram DM</a>`:""}
+        ${guest.phone?`<a class="btn ghost small" id="nWa" href="${waUrl(text,guest.phone)}" target="_blank" rel="noopener">WhatsApp</a>`:""}
+      </div>
+      <p class="hint">Paste it in Messenger, an Instagram DM or wherever you talk with ${esc(guest.name)}.</p>
+      <button class="btn ghost small" data-editprofile="Daniel" style="margin-top:4px">✏️ Edit ${roleLabel(guest).toLowerCase()} template</button>`
+    : `
+      <a class="btn msg block" style="margin-top:12px" id="nMsgr" href="${esc(group||"https://www.messenger.com/")}" target="_blank" rel="noopener">${MSG_ICON} Copy & open ${group?"team group":"Messenger"}</a>
+      <button class="btn ghost block" id="nCopy" style="margin-top:8px">Copy only</button>
+      <p class="hint">The message is copied – just paste and send. Messenger doesn't let apps tag people, so type <b>@</b> and pick the name to make a real tag that notifies them.${group?"":" Add your group link in Settings to open the group directly."}</p>`}
+    <button class="btn ghost block" style="margin-top:10px" data-close>${opt.back?"Done – back to prep":"Done"}</button>
+  `, root => {
+    const ta = root.querySelector("#nText");
+    const wa = root.querySelector("#nWa");
+    ta.addEventListener("input", ()=>{ if(wa) wa.href = waUrl(ta.value, guest?.phone); });
+    root.querySelector("#nCopy")?.addEventListener("click", ()=>copyText(ta.value, "Message copied – paste it"));
+    root.querySelector("#nFolder")?.addEventListener("click", ()=>copyText(folder, "Folder link copied"));
+    root.querySelector("#nMsgr")?.addEventListener("click", ()=>{ copyText(ta.value, "Copied – paste it in the group"); });
+    root.querySelector("#nIg")?.addEventListener("click", ()=>{ copyText(ta.value, "Copied – paste it in the DM"); });
+    root.querySelector("#nWaGroup")?.addEventListener("click", ()=>{ copyText(ta.value, "Copied – paste it in the group"); });
+    root.querySelectorAll("[data-editprofile]").forEach(b=>b.addEventListener("click", ()=>openProfile(b.dataset.editprofile)));
+  }, null, opt.back);
+}
+
+/* ---------- sheet ---------- */
+let sheetRefresher = null, sheetBack = null, navSkip = 0;
+// --- phone back button: each open pop-up and each tab is a step in the history (#sheet / #tab-x)
+function navPush(h){ try{ if(location.hash !== "#"+h) location.hash = h; }catch(_){ } }
+function userCloseSheet(){ const b = sheetBack; if(b){ sheetBack=null; b(); } else closeSheet(); }
+function openSheet(html, mount, refresher, back){
+  const layer = $("#layer");
+  const wasOpen = !!layer.firstElementChild;
+  layer.innerHTML = `<div class="scrim"><div class="sheet" role="dialog"><div class="grab"></div><div class="sc">${html}</div></div></div>`;
+  const scrim = layer.firstElementChild; const sheet = scrim.querySelector(".sheet");
+  scrim.addEventListener("click", e => { if(e.target===scrim || e.target.closest("[data-close]")) userCloseSheet(); });
+  sheetRefresher = refresher || null; sheetBack = back || null;
+  if(!wasOpen){ if(navSkip>0) setTimeout(()=>{ if($("#layer").firstElementChild && location.hash!=="#sheet") navPush("sheet"); }, 150); else navPush("sheet"); }
+  // swipe down to close
+  let y0 = null, dy = 0, dragging = false;
+  sheet.addEventListener("touchstart", e => {
+    const ta = e.target.closest("textarea, select");
+    if((sheet.scrollTop > 2 && !e.target.closest(".grab")) || (ta && ta.scrollTop > 0)){ y0 = null; return; }
+    y0 = e.touches[0].clientY; dy = 0; dragging = false;
+  }, {passive:true});
+  sheet.addEventListener("touchmove", e => {
+    if(y0 === null) return;
+    dy = e.touches[0].clientY - y0;
+    if(!dragging && dy < -4){ y0 = null; return; }
+    if(dy > 10){ dragging = true; if(e.cancelable) e.preventDefault(); sheet.style.transition = "none"; sheet.style.transform = `translateY(${dy-10}px)`; scrim.style.background = `rgba(28,28,28,${Math.max(0,.5-dy/800)})`; }
+  }, {passive:false});
+  const end = () => {
+    if(y0 === null){ return; } y0 = null; if(!dragging) return; dragging = false;
+    sheet.style.transition = "transform .2s ease";
+    if(dy > 110){ sheet.style.transform = "translateY(110%)"; setTimeout(userCloseSheet, 170); }
+    else { sheet.style.transform = ""; scrim.style.background = ""; }
+  };
+  sheet.addEventListener("touchend", end); sheet.addEventListener("touchcancel", end);
+  mount && mount(sheet);
+}
+function closeSheet(){
+  const had = !!$("#layer").firstElementChild;
+  $("#layer").innerHTML=""; sheetRefresher=null; sheetBack=null;
+  if(had && location.hash === "#sheet"){ navSkip++; try{ history.back(); }catch(_){ navSkip--; } }
+}
+window.addEventListener("hashchange", () => {
+  if(navSkip > 0){ navSkip--; return; }
+  const h = location.hash;
+  const open = !!$("#layer").firstElementChild;
+  if(h !== "#sheet" && open){
+    // back pressed while a pop-up is open
+    if(sheetBack){ const b = sheetBack; sheetBack = null; b(); if($("#layer").firstElementChild) navPush("sheet"); }
+    else { $("#layer").innerHTML=""; sheetRefresher=null; sheetBack=null; }
+    return;
+  }
+  if(h !== "#sheet" && document.querySelector(".who") && me){ closeWho(); return; }
+  const m = h.match(/^#tab-(tasks|plan|events|guests|settings)$/);
+  const t = m ? m[1] : (h==="" || h==="#" ? "tasks" : null);
+  if(t && t !== tab){ tab = t; render(); window.scrollTo(0,0); }
+});
+function refreshSheet(){ if(sheetRefresher) sheetRefresher(); }
+
+/* ---------- who am I ---------- */
+function closeWho(){ document.querySelectorAll(".who").forEach(x=>x.remove()); }
+function openWho(){
+  closeWho();
+  const el = document.createElement("div"); el.className="who";
+  el.innerHTML = `<h2>Who are you?</h2><p class="meta">So the app can show your tasks. ${demo?"(Demo – switch freely.)":"Saved on this device only."}</p>` +
+    MEMBERS.map(n=>`<button class="opt" data-n="${n}">${av(n)}<span>${n}<small>${ROLES[n]}</small></span></button>`).join("") +
+    (demo ? "" : `<button class="btn ghost block" style="margin-top:18px" data-startdemo>Just looking? See a demo first</button>`);
+  el.addEventListener("click", e => {
+    if(e.target.closest("[data-startdemo]")){ el.remove(); startDemo(); return; }
+    const b=e.target.closest("[data-n]"); if(!b) return; me=b.dataset.n;
+    if(!demo){ try{localStorage.setItem("fp_me",me);}catch(_){} }
+    el.remove(); render();
+  });
+  document.body.appendChild(el);
+}
+
+/* ---------- render ---------- */
+const ICONS = {
+  tasks:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>`,
+  plan:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><circle cx="8" cy="15" r="1"/><circle cx="12" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg>`,
+  events:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>`,
+  guests:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M17 11a3 3 0 1 0 0-6M22 21a6 6 0 0 0-4-5.6"/></svg>`,
+  settings:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>`
+};
+const activeEvents = () => events.filter(e => !allDone(e)).sort((a,b)=>a.date.localeCompare(b.date));
+const canPlan = () => db && canWrite && me!=="Savan";
+const myMine = ev => me && openSteps(ev).some(k=>myRole(ev,k,me)==="mine");
+const myTeam = ev => me && openSteps(ev).some(k=>myRole(ev,k,me)==="team");
+
+function render(){
+  $("#meBtn").innerHTML = me ? `${av(me)}${esc(me)}` : "Choose name";
+  const act = activeEvents();
+  const badgeN = act.filter(e => isStuck(e) || myMine(e)).length;
+  $("#tabs").innerHTML = [["tasks","My tasks"],["plan","Plan"],["events","Events"],["guests","Guests"],["settings","Settings"]].map(([k,l]) =>
+    `<button class="${tab===k?"on":""}" data-tab="${k}">${ICONS[k]}${l}${k==="tasks"&&badgeN?`<span class="badge">${badgeN}</span>`:""}</button>`).join("");
+  $("#status").innerHTML = demo ? "" : statusMsg ? `<div class="banner">${esc(statusMsg)}</div>` : (!canWrite && db ? `<div class="banner">You can view but not edit. Ask the owner to share it with you as Contributor or Editor.</div>` : "");
+  const v = $("#view");
+  if(!(demo || realData.loaded)){ v.innerHTML = `<div class="empty">Loading the team's events…</div>`; return; }
+  v.innerHTML = tab==="tasks"?renderTasks():tab==="plan"?renderPlan():tab==="events"?renderEvents():tab==="guests"?renderGuests():renderSettings();
+}
+
+function eventCard(ev, opts={}){
+  const d = parseD(ev.date); const g = guestNames(ev);
+  const dots = STEPS.map((s,k)=>`<i class="${stepState(ev,k)}" title="${esc(s.label)}"></i>`).join("");
+  let lines = "";
+  if(allDone(ev)) lines = `<div class="next"><span class="tag ok">All done ✓</span></div>`;
+  else {
+    const op = openSteps(ev);
+    if(!op.length) lines = `<div class="next meta">Waiting for the event day</div>`;
+    op.slice(0,3).forEach(k => {
+      const s = STEPS[k]; const di = dueInfo(ev,k); const p = progressOf(ev,k);
+      lines += `<div class="next">${s.who.length===1?av(s.who[0],1):""}<span><b>${esc(s.owner)}</b> · ${esc(s.label)}${p?` <span class="meta">${p}</span>`:""}</span>${di?`<span class="tag ${di.cls}">${di.txt}</span>`:""}</div>`;
+    });
+  }
+  const n = daysUntil(ev.date);
+  return `<div class="card tap${opts.alert?" alert":""}${demo&&focusId===ev.id?" focus":""}" data-ev="${ev.id}">
+    <div class="ev">
+      <div class="datebox"><b>${d.getDate()}</b><span>${d.toLocaleDateString("en-GB",{month:"short"})}</span></div>
+      <div class="ev-main">
+        <div>${typeTag(ev)}<span class="meta">${n>0?`in ${n} days`:n===0?"today":"past"}</span>${ev.fbLink?` <span class="meta">· 📘</span>`:""}</div>
+        <div class="ev-title">${esc(ev.title)}</div>
+        <div class="meta">${g.length?esc(g.join(", ")):(ev.type==="special"?"Community event":"No guests added")}${ev.time?` · ${esc(timeRange(ev))}`:""}</div>
+      </div>
+    </div>
+    <div class="dots">${dots}</div>
+    <div class="nextl">${lines}</div>
+    ${opts.alert?`<div class="row" style="margin-top:10px"><button class="btn ghost small" data-remindev="${ev.id}">⏰ Send reminder</button></div>`:""}
+  </div>`;
+}
+
+function renderTasks(){
+  const act = activeEvents();
+  const stuck = act.filter(isStuck);
+  let h = "";
+  let hintSeen = true; try{ hintSeen = !!localStorage.getItem("fp_tourhint_"+me); }catch(_){ }
+  if(me && !demo && !hintSeen) h += `<div class="card" style="background:var(--purple);border-color:var(--purple);color:#fff;margin-top:12px">
+    <div style="display:flex;align-items:flex-start;gap:10px">${av(me)}<div style="flex:1"><b style="font-family:Unbounded;font-size:14px">Hi ${esc(me)} 👋</b>
+    <div style="font-size:14px;margin-top:4px;color:#efe9f8">Take a 1-minute tour of how the app works for you – nothing you do in it is saved.</div></div>
+    <button class="mini-link" style="color:#d7cdea" data-act="hideTourHint" aria-label="Hide">✕</button></div>
+    <div class="row" style="margin-top:10px"><button class="btn lime small" data-act="myTour">▶ Start my tour</button><button class="btn small" style="background:transparent;border-color:rgba(255,255,255,.3)" data-act="hideTourHint">Maybe later</button></div></div>`;
+  if(stuck.length){
+    h += `<div class="section-title"><h2>⚠️ Needs attention</h2><span>${stuck.length} stuck</span></div>
+      <p class="meta" style="margin:-4px 2px 10px">Steps ${stuckDays()}+ days past their deadline. Everyone sees these, so anyone can help or nudge.</p>`;
+    h += stuck.map(e=>eventCard(e,{alert:true})).join("");
+  }
+  if(!me) return h + `<div class="empty"><b>Choose your name</b>Tap "Choose name" at the top to see your tasks.</div>`;
+  const rest = act.filter(e=>!isStuck(e));
+  const byDate = (a,b)=>a.date.localeCompare(b.date);
+  const mine = rest.filter(myMine).sort(byDate);
+  const team = rest.filter(e=>!myMine(e) && myTeam(e)).sort(byDate);
+  const others = rest.filter(e=>!myMine(e) && !myTeam(e));
+  h += `<div class="section-title"><h2>Your turn, ${esc(me)}</h2><span>${mine.length}</span></div>`;
+  h += mine.length ? mine.map(e=>eventCard(e)).join("") : `<div class="empty"><b>Nothing only you can do right now ✨</b>You'll hear in the Messenger group when it's your turn.</div>`;
+  if(team.length){
+    h += `<div class="section-title"><h2>Team to-dos</h2><span>${team.length}</span></div>
+      <p class="meta" style="margin:-4px 2px 10px">Shared jobs – confirming plans and approving material. Whoever gets there first.</p>`;
+    h += team.map(e=>eventCard(e)).join("");
+  }
+  h += `<div class="section-title"><h2>Waiting on others</h2><span>${others.length}</span></div>`;
+  h += others.length ? others.map(e=>eventCard(e)).join("") : `<div class="empty">Nothing else in progress.</div>`;
+  return h;
+}
+
+function renderPlan(){
+  const now = new Date(); const t = todayStr();
+  const first = new Date(now.getFullYear(), now.getMonth(), 1);
+  const months = [...Array(6)].map((_,i)=>new Date(first.getFullYear(), first.getMonth()+i, 1));
+  const end = ds(new Date(first.getFullYear(), first.getMonth()+6, 0));
+  const inRange = events.filter(e => e.date >= ds(first) && e.date <= end);
+  const cnt = k => inRange.filter(e=>(e.type||"social")===k).length;
+  const gaps = months.filter(m => { const ms=ds(m), me2=ds(new Date(m.getFullYear(),m.getMonth()+1,0)); return !events.some(e=>e.date>=ms && e.date<=me2); })
+    .map(m=>m.toLocaleDateString("en-GB",{month:"long"}));
+  const add = canPlan();
+  let h = `<div class="section-title"><h2>Next half year</h2><span>${esc(months[0].toLocaleDateString("en-GB",{month:"short"}))} – ${esc(months[5].toLocaleDateString("en-GB",{month:"short",year:"numeric"}))}</span></div>
+    <div class="stats"><div class="stat" style="background:var(--purple)"><b>${cnt("social")}</b><span>Socials</span></div><div class="stat" style="background:var(--blue)"><b>${cnt("workshop")}</b><span>Workshops</span></div><div class="stat" style="background:var(--orange)"><b>${cnt("special")}</b><span>Special</span></div></div>
+    ${gaps.length?`<div class="banner">No events planned in <b>${esc(gaps.join(", "))}</b>${add?" – tap a date to add one.":"."}</div>`:""}
+    <div class="legend"><span><i style="background:var(--purple)"></i>Social</span><span><i style="background:var(--blue)"></i>Workshop</span><span><i style="background:var(--orange)"></i>Special</span>${add?`<span>Tap an empty date to add</span>`:""}</div>`;
+  months.forEach(m => {
+    const y=m.getFullYear(), mo=m.getMonth(); const days=new Date(y,mo+1,0).getDate();
+    const lead=(new Date(y,mo,1).getDay()+6)%7;
+    const mEvents = events.filter(e=>{ const d=parseD(e.date); return d.getFullYear()===y && d.getMonth()===mo; }).sort((a,b)=>a.date.localeCompare(b.date));
+    let cells = ["M","T","W","T","F","S","S"].map(x=>`<div class="wd">${x}</div>`).join("") + `<div></div>`.repeat(lead);
+    for(let d=1; d<=days; d++){
+      const s = ds(new Date(y,mo,d)); const evs = mEvents.filter(e=>e.date===s);
+      const past = s < t, today = s===t;
+      if(evs.length) cells += `<button class="d has ${evs[0].type||"social"}${past?" past":""}${today?" today":""}" data-ev="${evs[0].id}" title="${esc(evs.map(e=>e.title).join(", "))}">${d}</button>`;
+      else cells += `<button class="d${past?" past":""}${today?" today":""}${add&&!past?" add":""}" ${add&&!past?`data-newdate="${s}"`:"disabled"}>${d}</button>`;
+    }
+    h += `<div class="card"><div class="mhead"><h3>${esc(m.toLocaleDateString("en-GB",{month:"long",year:"numeric"}))}</h3><span class="meta">${mEvents.length} event${mEvents.length===1?"":"s"}</span></div>
+      <div class="cal">${cells}</div>
+      ${mEvents.length ? `<div class="mlist">${mEvents.map(e=>`<div class="mline" data-ev="${e.id}"><span class="when">${esc(fmt(e.date,{weekday:"short",day:"numeric"}))}</span><span class="t">${esc(e.title)}</span><span class="mini">${STEPS.map((_,k)=>`<i class="${stepState(e,k)}"></i>`).join("")}</span></div>`).join("")}</div>`
+        : `<div class="gap">No events yet</div>`}
+    </div>`;
+  });
+  return h;
+}
+
+function renderEvents(){
+  const t = todayStr();
+  const list = events.filter(e => evFilter==="upcoming" ? e.date >= t : e.date < t)
+    .sort((a,b)=> evFilter==="upcoming" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
+  let h = `<div class="section-title"><h2>Events</h2>${canPlan()?`<button class="btn accent small" data-act="newEvent">+ New event</button>`:""}</div>
+    <div class="seg"><button class="${evFilter==="upcoming"?"on":""}" data-filter="upcoming">Upcoming</button><button class="${evFilter==="past"?"on":""}" data-filter="past">Past</button></div>`;
+  if(!list.length) return h + `<div class="empty"><b>${evFilter==="upcoming"?"No upcoming events yet":"No past events"}</b>${evFilter==="upcoming"?"Add events after your planning meeting, or tap a date in the Plan tab.":""}</div>`;
+  let lastM = "";
+  list.forEach(e => {
+    const m = parseD(e.date).toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+    if(m!==lastM){ h += `<div class="month">${m}</div>`; lastM=m; }
+    h += eventCard(e);
+  });
+  return h;
+}
+
+function guestStats(g){
+  const evs = events.filter(e => (e.guestIds||[]).includes(g.id));
+  const up = evs.filter(e=>e.date>=todayStr()).sort((a,b)=>a.date.localeCompare(b.date))[0];
+  return {evs, up};
+}
+function renderGuests(){
+  const q = guestQuery.trim().toLowerCase();
+  const match = g => !q || [g.name,g.artist,g.style].some(v => (v||"").toLowerCase().includes(q));
+  const stats = new Map(guests.map(g=>[g.id, guestStats(g)]));
+  const byName = (a,b) => (a.name||gname(a)).localeCompare(b.name||gname(b), "da");
+  const sorter = (a,b) => {
+    if(guestSort==="za") return byName(b,a);
+    if(guestSort==="most") return stats.get(b.id).evs.length-stats.get(a.id).evs.length || byName(a,b);
+    if(guestSort==="next"){ const x=stats.get(a.id).up?.date||"9999", y=stats.get(b.id).up?.date||"9999"; return x.localeCompare(y) || byName(a,b); }
+    return byName(a,b);
+  };
+  const ini = g => (g.name||gname(g)).split(/\s+/).map(x=>x[0]||"").join("").slice(0,2).toUpperCase();
+  const tile = g => `<button type="button" class="gtile" data-guest="${g.id}"><span class="gav r-${g.role==="dj"?"dj":g.role==="other"?"guest":"teacher"}">${esc(ini(g))}</span><b>${esc(g.name||gname(g))}</b><small>${esc((g.artist||"").trim() && g.artist!==g.name ? g.artist : (g.style||roleLabel(g)))}</small></button>`;
+  let h = `<div class="section-title"><h2>Teachers & DJs</h2>${db&&canWrite?`<button class="btn accent small" data-act="newGuest">+ Add</button>`:""}</div>
+    <input class="in search" id="gSearch" placeholder="Search name, artist name or genre" value="${esc(guestQuery)}">
+    <div style="display:flex;align-items:center;gap:8px;margin:0 2px 4px"><span class="meta">Sort by</span>
+      <select class="in" id="gSort" style="min-height:36px;padding:6px 10px;font-size:14px;width:auto;flex:1">
+        ${[["az","Name A–Z"],["za","Name Z–A"],["most","Most events"],["next","Next event"]].map(([k,l])=>`<option value="${k}" ${guestSort===k?"selected":""}>${l}</option>`).join("")}
+      </select></div>`;
+  if(!guests.length) return h + `<div class="empty"><b>No guests yet</b>Add the teachers and DJs you work with, with their contact info.</div>`;
+  let any = false;
+  [["teacher","💃 Teachers",g=>isTeacher(g)],["dj","🎧 DJs",g=>g.role==="dj"],["guest","⭐ Guests",g=>g.role==="other"]].forEach(([k,l,f]) => {
+    const list = guests.filter(g=>f(g) && match(g)).sort(sorter);
+    if(q && !list.length) return;
+    any = true;
+    const folded = guestFold.has(k) && !q, open = guestOpen.has(k) || !!q;
+    const shown = open ? list : list.slice(0,6);
+    h += `<div class="ggroup"><button type="button" class="ghead" data-gfold="${k}"><span>${l} <span class="meta" style="font-weight:500">${list.length}</span></span><span>${folded?"▸":"▾"}</span></button>`;
+    if(!folded){
+      h += list.length ? `<div class="gtiles">${shown.map(tile).join("")}</div>` : `<div class="meta" style="padding:6px 2px 8px">No ${l.split(" ")[1].toLowerCase()} yet.</div>`;
+      if(list.length>6 && !q) h += `<button type="button" class="btn ghost small block" style="margin-top:8px" data-gall="${k}">${open?"Show less":`Show all ${list.length}`}</button>`;
+    }
+    h += `</div>`;
+  });
+  if(!any) h += `<div class="empty"><b>No matches</b>Try another name or genre.</div>`;
+  return h;
+}
+
+function renderSettings(){
+  const nItems = k => ((settings.templates && settings.templates[k]) || DEFAULT_TPL[k]).length;
+  const row = (k, icon, title, sub, extra="") => `<button type="button" class="srow" data-sset="${k}"><span class="sicon">${icon}</span><span style="flex:1;min-width:0;text-align:left"><b>${title}</b><span class="meta" style="display:block">${sub}</span>${extra}</span><span class="meta" style="font-size:18px">›</span></button>`;
+  return `<div class="section-title"><h2>See how it works</h2></div>
+  <div class="card">
+    <p style="margin:0 0 10px">${demo?"You're in the demo. Nothing you do here is saved.":"Take your own short tour, or follow one made-up event through the whole team. Nothing is saved to the team's data."}</p>
+    ${demo?`<div class="row"><button class="btn ghost" data-act="restartTour">Restart tour</button><button class="btn" data-act="exitDemo">Exit demo</button></div>`:`
+      ${me?`<button class="btn lime block" data-act="myTour">▶ My tour – how it works for ${esc(me)}</button>`:""}
+      <button class="btn ${me?"ghost":"lime"} block" style="margin-top:8px" data-act="startDemo">▶ Full team demo</button>`}
+  </div>
+  <div class="section-title"><h2>Settings</h2>${demo?`<span>demo values</span>`:""}</div>
+  <div class="card" style="padding:4px 14px">
+    ${row("links","🔗","Links","Messenger group, Drive, WhatsApp, Facebook, Instagram", settings.messengerLink?"":`<span class="tag late" style="margin-top:4px">Messenger group link missing</span>`)}
+    ${row("checklists","☑️","Checklists",`Daniel ${nItems("collect")} · Savan ${nItems("edit")} · Amalie ${nItems("post")} items`)}
+    ${row("team","👥","Team",`<span class="avrow">${MEMBERS.map(n=>av(n,1)).join("")}</span>`)}
+    ${row("templates","📝","Templates","Messages to teachers, DJs, guests & WhatsApp · Event description")}
+    ${window.FP_FIREBASE && !demo ? row("access","🔐","Access","Team emails & PIN"+(window.fpIsAdmin?" · you're the admin":"")) : ""}
+  </div>
+  <div class="section-title"><h2>On this device</h2></div>
+  <div class="card"><div class="row" style="align-items:center"><div style="flex:1">${me?`${av(me)} <b style="margin-left:6px">${esc(me)}</b>`:"No name chosen"}</div>${window.FP_FIREBASE?`<button class="btn ghost small" data-signout="1">Sign out</button>`:`<button class="btn ghost small" data-act="who">Switch person</button>`}</div></div>`;
+}
+function openAccessSection(){
+  const t = window.fpTeam || {emails:[],names:{},admins:[]}; const admin = !!window.fpIsAdmin;
+  const byName = {}; Object.entries(t.names||{}).forEach(([em,n])=>{ byName[n]=em; });
+  openSheet(`<h2>🔐 Access</h2>
+    <p class="meta">People sign in with Google and type the team PIN once per phone. Only these emails can get in.${admin?"":" Only the admin can change this."}</p>
+    ${MEMBERS.map(n=>`<label class="f">${n}</label><input class="in" type="email" data-accmail="${n}" value="${esc(byName[n]||"")}" ${admin?"":"disabled"} placeholder="name@gmail.com">`).join("")}
+    ${admin?`<button class="btn block" style="margin-top:12px" id="aSave">Save team emails</button>
+    <label class="f" style="margin-top:18px">New team PIN (4–8 digits)</label><input class="in" id="aPin" inputmode="numeric" type="password" maxlength="8">
+    <div class="hint">Changing the PIN asks everyone to type the new one – useful when someone leaves.</div>
+    <button class="btn ghost block" style="margin-top:8px" id="aPinSave">Change PIN</button>`:""}
+    <div class="hint" id="aErr" style="color:var(--late)"></div>
+    <button class="btn ghost block" style="margin-top:14px" data-signout="1">Sign out of this phone</button>
+    <button class="btn ghost block" style="margin-top:8px" data-close>‹ Back to settings</button>`, root => {
+    root.querySelector("#aSave")?.addEventListener("click", async ()=>{
+      const names = {}; root.querySelectorAll("[data-accmail]").forEach(i=>{ const v=i.value.trim().toLowerCase(); if(v) names[v]=i.dataset.accmail; });
+      try{ await window.fpSaveTeam(names); toast("Team emails saved"); }catch(e){ root.querySelector("#aErr").textContent = "Couldn't save: "+(e.message||e.code||e); }
+    });
+    root.querySelector("#aPinSave")?.addEventListener("click", async ()=>{
+      const v = root.querySelector("#aPin").value.trim(); if(!/^\d{4,8}$/.test(v)){ root.querySelector("#aErr").textContent="The PIN must be 4–8 digits."; return; }
+      try{ await window.fpChangePin(v); root.querySelector("#aPin").value=""; toast("PIN changed"); }catch(e){ root.querySelector("#aErr").textContent = "Couldn't change the PIN: "+(e.message||e.code||e); }
+    });
+  });
+}
+function openSettingsSection(k){
+  if(k==="access"){ openAccessSection(); return; }
+  const editable = db && canWrite; const dis = editable ? "" : "disabled";
+  const tplText = key => esc(((settings.templates && settings.templates[key]) || DEFAULT_TPL[key]).join("\n"));
+  const back = `<button class="btn ghost block" style="margin-top:8px" data-close>‹ Back to settings</button>`;
+  if(k==="links") openSheet(`<h2>🔗 Links</h2>
+    <label class="f">Team Messenger group link</label>
+    <input class="in" id="sMsgr" placeholder="https://m.me/j/…" value="${esc(settings.messengerLink||"")}">
+    <div class="hint">In the group: tap the group name → Invite link (or Share) → copy. "Copy & open" buttons will open it.</div>
+    <label class="f">"Guest – Pictures and videos" Drive folder</label>
+    <input class="in" id="sDrive" value="${esc(settings.driveLink||DRIVE)}">
+    <label class="f">WhatsApp event group</label>
+    <input class="in" id="sWa" value="${esc(settings.waGroup||WA_GROUP)}">
+    <div class="grid2"><div><label class="f">Facebook page</label><input class="in" id="sFb" value="${esc(settings.fbPage||FB_PAGE)}"></div>
+    <div><label class="f">Instagram</label><input class="in" id="sIg" value="${esc(settings.igPage||IG_PAGE)}"></div></div>
+    <label class="f">Link to this app</label>
+    <input class="in" id="sApp" placeholder="https://claude.ai/…" value="${esc(settings.appLink||"")}">
+    <label class="f">Show as "Needs attention" when a step is overdue by</label>
+    <select class="in" id="sStuck">${[1,2,3,5,7].map(n=>`<option value="${n}" ${stuckDays()===n?"selected":""}>${n} day${n===1?"":"s"}</option>`).join("")}</select>
+    <button class="btn block" style="margin-top:14px" id="sSave" ${dis}>Save links</button>${back}`, root => {
+      root.querySelector("#sSave").addEventListener("click", async ()=>{ const v=id=>root.querySelector(id).value.trim();
+        const ok = await saveSettings({messengerLink:v("#sMsgr"), driveLink:v("#sDrive"), waGroup:v("#sWa"), fbPage:v("#sFb"), igPage:v("#sIg"), appLink:v("#sApp"), stuckDays:Number(v("#sStuck"))});
+        if(ok){ toast("Links saved"); closeSheet(); } });
+    });
+  if(k==="checklists") openSheet(`<h2>☑️ Checklists</h2>
+    <p class="meta">One item per line. Start a line with a group (<b>Facebook:</b>) or a person (<b>Savan:</b>, <b>Team:</b>) to group or assign it. Anyone can mark an item "not needed" on an event.</p>
+    <label class="f">Daniel – teachers & DJs</label><textarea class="in" id="tcollect">${tplText("collect")}</textarea>
+    <label class="f">Savan – editing</label><textarea class="in" id="tedit">${tplText("edit")}</textarea>
+    <label class="f">Amalie – Facebook, Instagram & WhatsApp</label><textarea class="in" id="tpost" style="min-height:130px">${tplText("post")}</textarea>
+    <button class="btn block" style="margin-top:14px" id="sSave" ${dis}>Save checklists</button>${back}`, root => {
+      root.querySelector("#sSave").addEventListener("click", async ()=>{ const lines=id=>root.querySelector(id).value.split("\n").map(x=>x.trim()).filter(Boolean);
+        const ok = await saveSettings({templates:{collect:lines("#tcollect"), edit:lines("#tedit"), post:lines("#tpost")}});
+        if(ok){ toast("Checklists saved"); closeSheet(); } });
+    });
+  if(k==="team"){
+    const draw = () => { const el=document.querySelector("#sTeam"); if(el) el.innerHTML = MEMBERS.map(n=>`<div class="guest">${av(n)}<div style="flex:1;min-width:0"><b>${n}</b><div class="meta">${esc(ROLES[n])}</div></div>
+      <label class="btn ghost small" style="cursor:pointer;${editable?"":"opacity:.4;pointer-events:none"}">📷 ${photos[n]?"Change":"Add photo"}<input type="file" accept="image/*" hidden data-photofor="${n}"></label></div>`).join(""); };
+    openSheet(`<h2>👥 Team</h2><p class="meta">Add a photo for each person – it replaces their colored circle everywhere in the app.</p><div class="card" id="sTeam" style="margin-top:10px"></div>${back}`, root => { draw(); bindPhotoControls(root); }, draw);
+  }
+  if(k==="templates"){
+    const r = (key, icon, title, sub) => `<div class="guest tap" data-tplopen="${key}" style="cursor:pointer"><div class="gi">${icon}</div><div style="flex:1;min-width:0"><b>${title}</b><div class="meta">${sub}</div></div><span class="meta">Edit ›</span></div>`;
+    openSheet(`<h2>📝 Templates</h2><p class="meta">Everyone on the team can edit these.</p>
+      <div class="card" style="margin-top:10px">${r("teacher","💃","Message to Dance teachers","Daniel · ask for bio, links, pictures & videos")}${r("dj","🎧","Message to DJs","Daniel · ask for bio, links, pictures & videos")}${r("guest","⭐","Message to Guests","Daniel · for talks, panels, lectures")}${r("group","💬","WhatsApp event group","Amalie · post with date, line-up & price")}${r("desc","📝","Event description","Program, price, place & guidelines for new events")}</div>${back}`, root => {
+      root.addEventListener("click", e => { const t=e.target.closest("[data-tplopen]"); if(!t) return; const key=t.dataset.tplopen; const goBack=()=>openSettingsSection("templates"); if(key==="desc") openDescEditor(goBack); else openTplEditor(key, goBack); });
+    });
+  }
+}
+
+/* ---------- event detail ---------- */
+function openEvent(id){
+  let seen = false;
+  const draw = () => {
+    const ev = events.find(e=>e.id===id);
+    const sc = document.querySelector(".sheet .sc"); if(!sc) return;
+    if(!ev){ if(seen) closeSheet(); else sc.innerHTML = `<div class="empty">Loading…</div>`; return; }
+    seen = true;
+    const keep = sc.parentElement.scrollTop;
+    const openNote = sc.querySelector("#sbNote"); const noteVal = openNote ? openNote.value : null;
+    sc.innerHTML = eventDetailHtml(ev, noteVal!==null);
+    if(noteVal!==null){ const n=sc.querySelector("#sbNote"); if(n) n.value=noteVal; }
+    sc.parentElement.scrollTop = keep;
+  };
+  openSheet(`<div></div>`, sheet => {
+    draw();
+    sheet.addEventListener("click", e => onEventSheetClick(e, id, draw));
+    sheet.addEventListener("change", e => onEventSheetChange(e, id));
+  }, draw);
+}
+function checklistHtml(ev, s, editable){
+  const its = items(s.key); let h = `<div class="cl">`; let lastG = undefined;
+  if(editable && its.length>1){
+    const anyOpen = its.some(it=>!itemState(ev,s.key,it.id)), anyDone = its.some(it=>itemState(ev,s.key,it.id)==="done");
+    h += `<div class="row" style="gap:6px;margin:2px 0 4px">
+      <button class="btn ghost small" style="min-height:30px;padding:4px 10px;font-size:13px" data-bulk="${s.key}|all" ${anyOpen?"":"disabled"}>☑️ Check all</button>
+      <button class="btn ghost small" style="min-height:30px;padding:4px 10px;font-size:13px" data-bulk="${s.key}|none" ${anyDone?"":"disabled"}>⬜ Uncheck all</button></div>`;
+  }
+  its.forEach(it => {
+    const grp = it.group;
+    if(grp !== lastG && grp){ h += `<div class="grp">${grp==="Facebook"?"📘":grp==="Instagram"?"📸":grp==="WhatsApp"?"💬":"•"} ${esc(grp)}</div>`; }
+    lastG = grp;
+    const st = itemState(ev, s.key, it.id); const info = ev.steps?.[s.key]?.items?.[it.id] || {};
+    const owners = itemOwners(it, s);
+    h += `<div class="item ${st==="done"?"done":st==="skip"?"skip":""}">
+      <button class="cb ${st==="done"?"on":""}" data-tick="${s.key}|${it.id}" ${editable&&st!=="skip"?"":"disabled"} aria-label="Tick">${st==="done"?"✓":""}</button>
+      <div style="flex:1;min-width:0"><div class="lbl">${it.owner?`${it.owner==="Team"?"":av(it.owner,1)} `:""}${esc(it.label)}${st==="skip"?` <span class="tag skip">Not needed</span>`:""}</div>
+        ${st&&info.by?`<div class="byline">${MEMBERS.includes(info.by)?av(info.by,1):""}<span>${st==="skip"?"Opted out by":"Ticked by"} <b>${esc(info.by)}</b>${info.at?` · ${esc(fmt(info.at))}`:""}</span></div>`:""}</div>
+      ${s.key==="post" && it.group==="WhatsApp" && !st ? `<button class="btn small" style="min-height:30px;padding:4px 10px;background:#1FAF55;border-color:#1FAF55" data-groupmsg="1">Message group</button>`:""}
+      ${editable?(st==="skip"?`<button class="mini-link" data-unskip="${s.key}|${it.id}">Undo</button>`:st?"":`<button class="mini-link" data-skipitem="${s.key}|${it.id}">Not needed</button>`):""}
+    </div>`;
+  });
+  return h + `</div>`;
+}
+function eventDetailHtml(ev, noteOpen){
+  const gs = (ev.guestIds||[]).map(id=>guests.find(g=>g.id===id)).filter(Boolean);
+  const dl = driveLink(ev);
+  const editable = db && canWrite;
+  let h = `<div>${ev.type==="special"?`<span class="tag special">Special community event</span>`:typeTag(ev)}${isStuck(ev)?`<span class="tag late">Needs attention</span>`:""}</div>
+    <h2 style="margin-top:8px">${esc(ev.title)}</h2>
+    <div class="meta">${esc(fmtLong(ev.date))}${ev.time?` · ${esc(timeRange(ev))}`:""}${ev.location?` · ${esc(ev.location)}`:""}</div>
+    ${ev.notes?`<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700;font-size:14px">📝 Event description</summary><p style="margin:8px 0 0;white-space:pre-wrap;font-size:14px">${esc(ev.notes)}</p></details>`:""}
+    ${(ev.notes || (editable && me!=="Savan")) ? `<div class="row" style="margin-top:8px">
+      ${ev.notes?`<button class="btn ghost small" data-copydesc="1">Copy description for Facebook</button>`:""}
+      ${editable && me!=="Savan"?`<button class="btn ghost small" data-editev="1">✏️ Edit event</button>`:""}</div>`:""}
+    <div class="row" style="margin-top:12px">
+      ${ev.fbLink?`<a class="btn ghost small" href="${esc(ev.fbLink)}" target="_blank" rel="noopener">📘 Facebook event</a>`:""}
+      ${dl?`<a class="btn ghost small" href="${esc(dl)}" target="_blank" rel="noopener">📁 Drive folder</a>`:""}
+    </div>
+    <div class="section-title"><h2>Prep</h2><span>${STEPS.filter((_,k)=>["done","skipped"].includes(stepState(ev,k))).length}/${STEPS.length} done</span></div>
+    <div class="steps">`;
+  STEPS.forEach((s,k) => {
+    const st = ev.steps?.[s.key] || {}; const state = stepState(ev,k);
+    const di = dueInfo(ev,k); const p = progressOf(ev,k);
+    h += `<div class="step ${state}" data-step="${s.key}"><div class="sdot">${state==="done"?"✓":state==="skipped"?"–":k+1}</div><div class="sbody">
+      <div class="sname">${esc(s.label)} ${p&&state!=="skipped"?`<span class="meta">${p}</span>`:""}</div>
+      <div class="sowner">${s.who.length===1?av(s.who[0],1):""}${esc(s.owner)}${state==="open"&&di?` <span class="tag ${di.cls}">${di.txt}</span>`:""}</div>`;
+    if(state==="done"){
+      h += `<div class="meta" style="margin-top:4px">Done${st.by?` by ${esc(st.by)}`:""}${st.at?` · ${esc(fmt(st.at))}`:""}${editable&&s.kind!=="list"?` · <button class="linkbtn" data-reopen="${s.key}">Undo</button>`:""}</div>`;
+      h += `<button type="button" class="btn ghost small resend" data-resend="${s.key}">💬 Message again · ${esc(NOTIFY_TO[s.key]||"")}</button>`;
+      if(s.kind==="list") h += checklistHtml(ev,s,editable);
+    } else if(state==="skipped"){
+      h += `<div class="meta" style="margin-top:4px">Skipped${ev.type==="special"?" – special event":""}${editable?` · <button class="linkbtn" data-unskipstep="${s.key}">Turn back on</button>`:""}</div>`;
+    } else if(state==="locked"){
+      const why = s.kind==="list" ? `Usually starts after “${STEPS[SIDX[s.gate[0]]].label}” – but anyone can tick things off already.` : `Starts after “${STEPS[SIDX[s.gate[0]]].label}”`;
+      h += `<div class="meta" style="margin-top:4px">${esc(why)}</div>`;
+      if(s.kind==="list") h += checklistHtml(ev, s, editable);
+      if(s.key==="collect" && editable) h += `<button class="linkbtn" data-skipstep="collect">Skip – no teachers/DJs</button>`;
+      h += `<div class="due">Deadline <input type="date" data-due="${s.key}" value="${esc(st.due||"")}" ${editable?"":"disabled"}></div>`;
+    } else { // open
+      h += `<div class="meta" style="margin-top:4px">${esc(s.desc)}</div>`;
+      if(s.key==="collect"){
+        h += `<div class="row" style="margin-top:10px"><button class="btn lime small" data-copyfolder="1">📁 Copy upload folder link</button></div>`;
+        if(gs.length) h += `<div style="margin-top:6px">` + gs.map(g=>`<div class="guest" style="padding:8px 0"><div class="gi" style="width:30px;height:30px;font-size:14px">${roleIcon(g)}</div><div style="flex:1;min-width:0;font-weight:600">${esc(gname(g))} <span class="meta">· ${roleLabel(g)}</span></div><button class="btn ghost small" data-askguest="${g.id}">Message</button></div>`).join("") + `</div>`;
+      }
+      if(s.key==="post"){
+        const ap = stepState(ev, SIDX.approve);
+        h += `<div class="note" style="border-color:${ap==="done"?"var(--ink)":"var(--orange)"};background:${ap==="done"?"#f3ffd6":"#fff1ec"}">${ap==="done"?"✅ Promo material is approved and in the Drive folder.":"Promo material isn't approved yet – you can still create the event and do the rest later."}</div>`;
+      }
+      if(s.key==="edit" && (ev.steps?.approve?.changes||[]).length){
+        const last = ev.steps.approve.changes.slice(-1)[0];
+        h += `<div class="note">↩️ <b>${esc(last.by)}</b> asked for changes (${esc(fmt(last.at))}): “${esc(last.note)}”</div>`;
+      }
+      if(s.kind==="list") h += checklistHtml(ev, s, editable);
+      h += `<div class="due">Deadline <input type="date" data-due="${s.key}" value="${esc(st.due||"")}" ${editable?"":"disabled"}></div>`;
+      if(editable){
+        if(s.kind==="single") h += `<div class="row" style="margin-top:10px"><button class="btn accent small" data-done="${s.key}">Mark done & notify</button><button class="btn ghost small" data-remind="${k}">Reminder</button></div>`;
+        else if(s.kind==="approve"){
+          (st.changes||[]).forEach(c => h += `<div class="note">↩️ ${esc(c.by)} · ${esc(fmt(c.at))}: “${esc(c.note)}”</div>`);
+          h += `<div class="row" style="margin-top:10px"><button class="btn lime small" data-done="approve">✅ Approve & notify Amalie</button><button class="btn ghost small" data-sendback="1">↩️ Send back to Savan</button></div>`;
+          if(noteOpen) h += `<label class="f">What should Savan change?</label><textarea class="in" id="sbNote" placeholder="e.g. Use the photo where they're dancing, and add the date bigger"></textarea>
+            <div class="row" style="margin-top:8px"><button class="btn accent small" data-sendbackgo="1">Send back & notify Savan</button></div>`;
+        } else h += `<div class="row" style="margin-top:10px"><button class="btn ghost small" data-remind="${k}">⏰ Send reminder</button></div>`;
+        if(!me) h += `<div class="hint">Choose your name at the top first.</div>`;
+      }
+    }
+    h += `</div></div>`;
+  });
+  h += `</div>`;
+  h += `<div class="section-title"><h2>Guests</h2><span>${gs.length}</span></div>`;
+  h += gs.length ? `<div class="card">${gs.map(g=>`<div class="guest"><div class="gi">${g.role==="dj"?"🎧":g.role==="teacher"?"💃":"⭐"}</div><div style="flex:1;min-width:0"><div style="font-weight:700">${esc(gname(g))}</div><div class="meta">${esc(g.instagram||g.phone||g.email||"No contact saved")}</div></div><button class="btn ghost small" data-askguest="${g.id}">Message</button></div>`).join("")}</div>`
+    : `<div class="empty" style="padding:12px">No guests on this event${ev.type==="special"?" – that's fine for a community event":""}.</div>`;
+  if(editable && me!=="Savan") h += `<div class="row" style="margin-top:14px"><button class="btn ghost" data-editev="1">✏️ Edit event</button><button class="btn ghost danger" data-delev="1">Delete</button></div>`;
+  h += `<button class="btn ghost block" style="margin-top:8px" data-close>Close</button>`;
+  return h;
+}
+const needMe = () => { if(!me){ openWho(); return false; } return true; };
+async function tick(ev, key, id, state){
+  const s = STEPS[SIDX[key]];
+  const cur = {...(ev.steps?.[key]?.items||{})};
+  cur[id] = state ? {s:state, by:me, at:todayStr()} : {s:"", by:"", at:""};
+  const all = items(key).every(it => cur[it.id]?.s);
+  const wasDone = !!ev.steps?.[key]?.done;
+  const patch = {items:{[id]:cur[id]}};
+  if(all && !wasDone) Object.assign(patch,{done:true,by:me,at:todayStr()});
+  if(!all && wasDone) Object.assign(patch,{done:false,by:"",at:""});
+  const ok = await write(()=>db.doc("events/"+ev.id).update({steps:{[key]:patch}}));
+  if(ok && all && !wasDone){
+    const evNow = {...ev, steps:{...ev.steps, [key]:{...(ev.steps?.[key]||{}), ...patch, items:cur}}};
+    notifyAfter(evNow, key);
+  }
+}
+async function bulkTick(ev, key, mode){
+  const cur = {...(ev.steps?.[key]?.items||{})}; const changed = {};
+  items(key).forEach(it => {
+    const st = cur[it.id]?.s || "";
+    if(mode==="all" && !st){ cur[it.id] = changed[it.id] = {s:"done", by:me, at:todayStr()}; }
+    if(mode==="none" && st==="done"){ cur[it.id] = changed[it.id] = {s:"", by:"", at:""}; }
+  });
+  if(!Object.keys(changed).length){ toast(mode==="all"?"Everything is already ticked":"Nothing to uncheck"); return; }
+  const all = items(key).every(it => cur[it.id]?.s);
+  const wasDone = !!ev.steps?.[key]?.done;
+  const patch = {items:changed};
+  if(all && !wasDone) Object.assign(patch,{done:true,by:me,at:todayStr()});
+  if(!all && wasDone) Object.assign(patch,{done:false,by:"",at:""});
+  const ok = await write(()=>db.doc("events/"+ev.id).update({steps:{[key]:patch}}));
+  if(ok && all && !wasDone) notifyAfter({...ev, steps:{...ev.steps, [key]:{...(ev.steps?.[key]||{}), ...patch, items:cur}}}, key);
+}
+const NOTIFY_TO = {plan:"Daniel & Amalie", collect:"Savan", edit:"approvers", approve:"Amalie", post:"the team"};
+function notifyAfter(ev, key){
+  const titles = {plan:ev.steps?.collect?.skipped?"Tell Savan & Amalie":"Tell Daniel & Amalie", collect:"Tell Savan", edit:"Ask for approval", approve:"Tell Amalie", post:"It's live! Tell the team 🎉"};
+  openNotify(titles[key], msgAfter(ev, key), {back: ()=>showStep(ev.id, key)});
+}
+async function onEventSheetClick(e, id, redraw){
+  const ev = events.find(x=>x.id===id); if(!ev) return;
+  const t = e.target.closest("button"); if(!t) return;
+  const d = t.dataset;
+  if(d.bulk){ if(!needMe()) return; const [k,m]=d.bulk.split("|"); await bulkTick(ev,k,m); return; }
+  if(d.tick){ if(!needMe()) return; const [k,i]=d.tick.split("|"); await tick(ev,k,i, itemState(ev,k,i)==="done"?null:"done"); return; }
+  if(d.skipitem){ if(!needMe()) return; const [k,i]=d.skipitem.split("|"); await tick(ev,k,i,"skip"); return; }
+  if(d.unskip){ const [k,i]=d.unskip.split("|"); await tick(ev,k,i,null); return; }
+  if(d.done){
+    if(!needMe()) return;
+    t.disabled = true;
+    const patch = {done:true,by:me,at:todayStr()};
+    const ok = await write(()=>db.doc("events/"+id).update({steps:{[d.done]:patch}}));
+    if(ok) notifyAfter({...ev, steps:{...ev.steps,[d.done]:{...(ev.steps?.[d.done]||{}),...patch}}}, d.done); else t.disabled=false;
+    return;
+  }
+  if(d.sendback){ const sc=document.querySelector(".sheet .sc"); sc.innerHTML = eventDetailHtml(ev, true); sc.querySelector("#sbNote")?.focus(); return; }
+  if(d.sendbackgo){
+    if(!needMe()) return;
+    const note = (document.querySelector("#sbNote")?.value||"").trim(); if(!note){ toast("Write what should change"); return; }
+    const reset = Object.fromEntries(items("edit").map(it=>[it.id,{s:"",by:"",at:""}]));
+    const changes = [...(ev.steps?.approve?.changes||[]), {by:me, at:todayStr(), note}];
+    const ok = await write(()=>db.doc("events/"+id).update({steps:{edit:{done:false,by:"",at:"",items:reset}, approve:{changes}}}));
+    if(ok) openNotify("Tell Savan what to change", msgSendBack(ev, note), {back: ()=>showStep(id, "edit")});
+    return;
+  }
+  if(d.reopen){ await write(()=>db.doc("events/"+id).update({steps:{[d.reopen]:{done:false,by:"",at:""}}})); return; }
+  if(d.skipstep){ await write(()=>db.doc("events/"+id).update({steps:{[d.skipstep]:{skipped:true}}})); return; }
+  if(d.unskipstep){ await write(()=>db.doc("events/"+id).update({steps:{[d.unskipstep]:{skipped:false}}})); return; }
+  if(d.remind) { openNotify("Send a reminder", msgReminder(ev, +d.remind), {back: ()=>showStep(id, STEPS[+d.remind].key)}); return; }
+  if(d.groupmsg){ openNotify("Message to the WhatsApp group", msgGroup(ev), {wa:true, back: ()=>showStep(id, "post")}); return; }
+  if(d.copydesc){ copyText(ev.notes||"", "Description copied – paste it in Facebook"); return; }
+  if(d.resend){ notifyAfter(ev, d.resend); return; }
+  if(d.copyfolder){ const l = driveLink(); if(l) copyText(l, "Folder link copied – paste it to the guest"); else toast("Add the Drive folder link in Settings"); return; }
+  if(d.askguest){ const g = guests.find(x=>x.id===d.askguest); if(g) openNotify(`Message ${g.name}`, msgGuest(g, ev), {guest:g, ev, back: ()=>showStep(id, "collect")}); return; }
+  if(d.editev){ openEventForm(ev); return; }
+  if(d.delev){
+    if(d.confirm){ const ok = await write(()=>db.doc("events/"+id).delete()); if(ok){ closeSheet(); toast("Event deleted"); } }
+    else { d.confirm="1"; t.textContent="Tap again to delete"; }
+  }
+}
+async function onEventSheetChange(e, id){
+  const inp = e.target.closest("[data-due]"); if(!inp) return;
+  await write(()=>db.doc("events/"+id).update({steps:{[inp.dataset.due]:{due:inp.value}}}));
+}
+
+/* ---------- team photos ---------- */
+function resizePhoto(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file); const img = new Image();
+    img.onload = () => { const S=200, c=document.createElement("canvas"); c.width=c.height=S; const x=c.getContext("2d");
+      const m=Math.min(img.width,img.height); x.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);
+      URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg",0.82)); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("bad image")); };
+    img.src = url;
+  });
+}
+async function setPhoto(name, file){
+  if(!file) return;
+  if(!/^image\//.test(file.type)){ toast("Pick a photo"); return; }
+  try{ const data = await resizePhoto(file); const ok = await write(()=>db.doc("members/"+name).set({photo:data})); if(ok) toast("Photo saved"); }
+  catch(e){ toast("Couldn't read that photo"); }
+}
+async function removePhoto(name){ const ok = await write(()=>db.doc("members/"+name).set({photo:""})); if(ok) toast("Photo removed"); }
+function photoControls(name){
+  const editable = db && canWrite;
+  return `<div class="photo-edit">${av(name,false,true)}<div class="row" style="flex:1">
+    <label class="btn ghost small" style="cursor:pointer;${editable?"":"opacity:.4;pointer-events:none"}">📷 ${photos[name]?"Change photo":"Add photo"}<input type="file" accept="image/*" hidden data-photofor="${name}"></label>
+    ${photos[name]&&editable?`<button class="btn ghost small danger" data-rmphoto="${name}">Remove</button>`:""}</div></div>`;
+}
+function bindPhotoControls(root){
+  root.addEventListener("change", e => { const i=e.target.closest("[data-photofor]"); if(i) setPhoto(i.dataset.photofor, i.files[0]); });
+  root.addEventListener("click", e => { const b=e.target.closest("[data-rmphoto]"); if(b) removePhoto(b.dataset.rmphoto); });
+}
+
+/* ---------- profiles & templates ---------- */
+function tplBox(key, label){
+  return `<label class="f">${label}</label><textarea class="in" data-tplkey="${key}" style="min-height:170px;font-size:14px">${esc(msgTpl(key))}</textarea>
+    <div class="row" style="margin-top:6px"><button class="mini-link" data-resettpl="${key}">Reset to default</button><button class="mini-link" data-previewtpl="${key}">Preview</button></div>
+    <div class="note" data-preview="${key}" style="display:none;white-space:pre-wrap;background:var(--card);border-color:var(--blue)"></div>`;
+}
+function previewEvent(){ return activeEvents()[0] || {title:"House Jam", date:addDays(todayStr(),30), time:DEFAULT_START, endTime:DEFAULT_END, location:DEFAULT_WHERE, guestIds:[]}; }
+const TPL_INFO = {
+  teacher:{who:"Daniel", title:"Message to Dance teachers", sub:"Used by the Message button next to each teacher", icon:"💃"},
+  dj:{who:"Daniel", title:"Message to DJs", sub:"Used by the Message button next to each DJ", icon:"🎧"},
+  guest:{who:"Daniel", title:"Message to Guests", sub:"Used by the Message button next to each guest", icon:"⭐"},
+  group:{who:"Amalie", title:"WhatsApp event group", sub:"Used by Message group in Amalie's checklist", icon:"💬"}
+};
+function openProfile(name){
+  name = name || me; if(!name){ openWho(); return; }
+  const row = k => { const t=TPL_INFO[k]; return `<div class="guest tap" data-opentpl="${k}" style="cursor:pointer"><div class="gi">${t.icon}</div><div style="flex:1;min-width:0"><b>${esc(t.title)}</b><div class="meta">${av(t.who,1)} ${esc(t.who)} · ${esc(t.sub)}</div></div><span class="meta">Edit ›</span></div>`; };
+  openSheet(`
+    <div style="display:flex;align-items:center;gap:12px"><div style="flex:1"><h2>${esc(name)}</h2><div class="meta">${esc(ROLES[name]||"")}</div></div>
+    ${name===me?(window.FP_FIREBASE&&!demo?`<button class="btn ghost small" data-signout="1">Sign out</button>`:`<button class="btn ghost small" data-switch="1">Switch person</button>`):""}</div>
+    <div id="pPhoto">${photoControls(name)}</div>
+    <div class="section-title"><h2>Team templates</h2></div>
+    <p class="meta" style="margin-top:-4px">Everyone on the team can edit these.</p>
+    <div class="card" style="margin-top:10px">
+      ${row("teacher")}${row("dj")}${row("guest")}${row("group")}
+      <div class="guest tap" data-opendesc="1" style="cursor:pointer"><div class="gi">📝</div><div style="flex:1;min-width:0"><b>Event description</b><div class="meta">Program, place & guidelines filled into new events</div></div><span class="meta">Edit ›</span></div>
+    </div>
+    <button class="btn ghost block" style="margin-top:8px" data-close>Close</button>`, root => {
+    bindPhotoControls(root);
+    root.addEventListener("click", e => {
+      const t = e.target.closest("[data-switch],[data-opentpl],[data-opendesc]"); if(!t) return;
+      if(t.dataset.switch){ closeSheet(); openWho(); }
+      if(t.dataset.opentpl) openTplEditor(t.dataset.opentpl, name);
+      if(t.dataset.opendesc) openDescEditor(name);
+    });
+  }, () => { const el=document.querySelector("#pPhoto"); if(el) el.innerHTML = photoControls(name); });
+}
+function openTplEditor(k, back){
+  const t = TPL_INFO[k];
+  openSheet(`<h2>${t.icon} ${esc(t.title)}</h2>
+    <p class="meta">${esc(t.sub)}. Words in {curly brackets} are filled in automatically: {guest} {event} {date} {time} {where} {folder} {fb} {lineup}</p>
+    <textarea class="in" id="tTpl" style="min-height:240px;font-size:14px">${esc(msgTpl(k))}</textarea>
+    <div class="row" style="margin-top:6px"><button class="mini-link" id="tReset">Reset to default</button><button class="mini-link" id="tPrev">Preview</button></div>
+    <div class="note" id="tPreview" style="display:none;white-space:pre-wrap;background:var(--card);border-color:var(--blue)"></div>
+    <button class="btn block" style="margin-top:10px" id="tSave" ${db&&canWrite?"":"disabled"}>Save template</button>
+    <button class="btn ghost block" style="margin-top:8px" id="tBack">‹ Back to templates</button>`, root => {
+    const ta = root.querySelector("#tTpl");
+    root.querySelector("#tReset").addEventListener("click", ()=>{ ta.value = DEFAULT_MSG[k]; });
+    root.querySelector("#tPrev").addEventListener("click", ()=>{ const box=root.querySelector("#tPreview"); const g = k==="dj"?(guests.find(x=>x.role==="dj")||{name:"DJ Name",role:"dj"}):k==="guest"?(guests.find(x=>x.role==="other")||{name:"Guest Name",role:"other"}):(guests.find(x=>x.role==="teacher")||{name:"Teacher Name"}); box.textContent = fillTpl(ta.value, previewEvent(), g); box.style.display = box.style.display==="none"?"block":"none"; });
+    const goBack = () => typeof back==="function" ? back() : openProfile(back);
+    root.querySelector("#tSave").addEventListener("click", async ()=>{ const ok = await saveSettings({msgTemplates:{...(settings.msgTemplates||{}), [k]:ta.value}}); if(ok){ toast("Template saved"); goBack(); } });
+    root.querySelector("#tBack").addEventListener("click", goBack);
+  }, null, back ? (() => typeof back==="function" ? back() : openProfile(back)) : null);
+}
+function openDescEditor(back){
+  openSheet(`<h2>Event description template</h2>
+    <p class="meta">Filled into every new event. Lines like “…workshop with:”, “…dance floor with:”, “Teacher:” and “DJ:” get the guests' names automatically.</p>
+    <textarea class="in" id="dTpl" style="min-height:360px;font-size:14px">${esc(descTpl())}</textarea>
+    <div class="row" style="margin-top:6px"><button class="mini-link" id="dReset">Reset to default</button></div>
+    <button class="btn block" style="margin-top:10px" id="dSave" ${db&&canWrite?"":"disabled"}>Save template</button>
+    ${back?`<button class="btn ghost block" style="margin-top:8px" id="dBack">‹ Back to templates</button>`:`<button class="btn ghost block" style="margin-top:8px" data-close>Close</button>`}`, root => {
+    const goBack = () => typeof back==="function" ? back() : openProfile(back);
+    root.querySelector("#dBack")?.addEventListener("click", goBack);
+    root.querySelector("#dReset").addEventListener("click", ()=>{ root.querySelector("#dTpl").value = DEFAULT_DESC; });
+    root.querySelector("#dSave").addEventListener("click", async ()=>{ const ok = await saveSettings({descTemplate: root.querySelector("#dTpl").value}); if(ok){ toast("Template saved"); if(back) goBack(); } });
+  }, null, back ? (() => typeof back==="function" ? back() : openProfile(back)) : null);
+}
+
+/* ---------- event form ---------- */
+function openEventForm(ev, prefill){
+  const isNew = !ev || !ev.id; ev = Object.assign({type:"workshop",guestIds:[],steps:{}}, isNew?{title:titleFor([],[]),time:DEFAULT_START,endTime:DEFAULT_END,location:DEFAULT_WHERE,notes:descTpl()}:{}, ev||{}, prefill||{});
+  let sel = new Set(ev.guestIds||[]);
+  let newGuests = (prefill && prefill._newGuests) ? [...prefill._newGuests] : [];
+  const dueVal = k => ev.steps?.[k]?.due || "";
+  openSheet(`
+    <h2>${isNew?"New event":"Edit event"}</h2>
+    <label class="f">Event name</label><input class="in" id="fTitle" placeholder="Fuse Point Jam// Open workshop w/ … and open floor w/ …" value="${esc(ev.title||"")}">
+    <label class="f">Date</label><input class="in" type="date" id="fDate" value="${esc(ev.date||"")}">
+    <div class="grid2"><div><label class="f">Starts</label><input class="in" type="time" id="fTime" value="${esc(ev.time||"")}"></div>
+    <div><label class="f">Ends</label><input class="in" type="time" id="fEnd" value="${esc(ev.endTime||"")}"></div></div>
+    <label class="f">Type</label>
+    <div class="chips" id="fType">${Object.entries(TYPES).map(([k,l])=>`<button type="button" class="chip ${ev.type===k?"on":""}" data-type="${k}">${l}</button>`).join("")}</div>
+    <div class="hint" id="fSkipHint">${ev.type==="special"?"Daniel's teachers & DJs step is skipped for special events (you can turn it back on).":""}</div>
+    <label class="f">Location</label><input class="in" id="fLoc" value="${esc(ev.location||"")}">
+    <label class="f">Teachers & DJs</label>
+    <div class="chips" id="fGuests"></div>
+    <input class="in" id="fGSearch" placeholder="🔍 Search or add a teacher, DJ or guest" autocomplete="off" style="margin-top:8px">
+    <div id="fGRes"></div>
+    <div class="row" style="margin-top:8px;flex-wrap:nowrap"><input class="in" id="fNewGuest" placeholder="New name" style="flex:2;min-width:0"><select class="in" id="fNewRole" style="flex:1;min-width:0"><option value="teacher">Teacher</option><option value="dj">DJ</option><option value="other">Guest</option></select></div>
+    <button type="button" class="btn ghost small" id="fAddGuest" style="margin-top:6px">+ Add new teacher, DJ or guest</button>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px"><label class="f">Event description</label><button type="button" class="btn ghost small" id="fCopyDesc" style="min-height:30px;padding:4px 12px;font-size:13px;margin-bottom:6px">📋 Copy text</button></div>
+    <textarea class="in" id="fNotes" style="min-height:220px;font-size:14px">${esc(ev.notes||"")}</textarea>
+    <div class="hint">Filled from your template – teachers and DJs are added automatically to the name and description when you pick them. Edit the template in Settings → Templates.</div>
+    <label class="f">Step deadlines</label>
+    <div class="grid2">${STEPS.map(s=>`<div><div class="hint" style="margin:0 0 4px">${esc(s.label)}</div><input class="in" type="date" data-fdue="${s.key}" value="${esc(dueVal(s.key))}"></div>`).join("")}</div>
+    <button type="button" class="linkbtn" id="fSuggest" style="margin-top:6px">Suggest deadlines from event date</button>
+    <div class="hint" id="fErr" style="color:var(--late)"></div>
+    <div class="row" style="margin-top:14px"><button class="btn ghost" data-close>Cancel</button><button class="btn accent" id="fSave">${isNew?"Add event":"Save"}</button></div>
+  `, async root => {
+    let type = ev.type || "workshop";
+    const q = s => root.querySelector(s);
+    const drawGuests = () => {
+      const chosen = guests.filter(g=>sel.has(g.id));
+      q("#fGuests").innerHTML = (chosen.length||newGuests.length)
+        ? chosen.map(g=>`<button type="button" class="chip on" data-g="${g.id}" title="Remove">${roleIcon(g)} ${esc(gname(g))} <span style="opacity:.7">✕</span></button>`).join("")
+          + newGuests.map((g,i)=>`<button type="button" class="chip on new" data-ng="${i}" title="Will be added to Teachers & DJs">${roleIcon(g)} ${esc(g.name)} <span style="opacity:.7">(new) ✕</span></button>`).join("")
+        : `<span class="hint">No one added yet – search below.</span>`;
+    };
+    const drawResults = () => {
+      const t = q("#fGSearch").value.trim(); const tl = t.toLowerCase(); const box = q("#fGRes");
+      if(!t){ box.innerHTML = ""; return; }
+      const hits = guests.filter(g => !sel.has(g.id) && [g.name,g.artist,g.style].some(v=>(v||"").toLowerCase().includes(tl))).sort((a,b)=>gname(a).localeCompare(gname(b))).slice(0,6);
+      const exact = guests.some(g => [g.name,g.artist].some(v=>(v||"").trim().toLowerCase()===tl)) || newGuests.some(g=>g.name.toLowerCase()===tl);
+      box.innerHTML = `<div class="card" style="padding:6px 12px;margin:6px 0 0">${hits.map(g=>`<div class="guest tap" data-pick="${g.id}" style="cursor:pointer;padding:8px 0"><div class="gi" style="width:30px;height:30px;font-size:14px">${roleIcon(g)}</div><div style="flex:1;min-width:0"><b>${esc(gname(g))}</b><div class="meta">${roleLabel(g)}${g.artist&&g.artist!==g.name?` · ${esc(g.name)}`:""}</div></div><span class="meta">Add</span></div>`).join("")}
+        ${exact?"":`<div class="guest" style="padding:8px 0;flex-wrap:wrap"><span class="meta" style="flex:1 1 100%">New: “${esc(t)}” as</span>
+          <button type="button" class="btn ghost small" data-newrole="teacher">💃 Teacher</button><button type="button" class="btn ghost small" data-newrole="dj">🎧 DJ</button><button type="button" class="btn ghost small" data-newrole="other">⭐ Guest</button></div>`}
+        ${!hits.length&&exact?`<div class="meta" style="padding:8px 0">Already added.</div>`:""}</div>`;
+    };
+    const syncDesc = () => {
+      const chosen = guests.filter(g=>sel.has(g.id)).concat(newGuests);
+      const TG = chosen.filter(g=>isTeacher(g)), DG = chosen.filter(g=>g.role==="dj");
+      const T = TG.map(gname), D = DG.map(gname);
+      q("#fNotes").value = namesIntoDesc(q("#fNotes").value, TG, DG);
+      if(TITLE_RE.test(q("#fTitle").value.trim())) q("#fTitle").value = titleFor(T, D);
+    };
+    drawGuests(); if(isNew) syncDesc();
+    q("#fType").addEventListener("click", e=>{ const b=e.target.closest("[data-type]"); if(!b) return; type=b.dataset.type; root.querySelectorAll("#fType .chip").forEach(c=>c.classList.toggle("on",c===b)); q("#fSkipHint").textContent = type==="special" ? "Daniel's teachers & DJs step is skipped for special events (you can turn it back on)." : ""; });
+    q("#fGuests").addEventListener("click", e=>{ const b=e.target.closest("[data-g]"); if(b){ sel.delete(b.dataset.g); drawGuests(); drawResults(); syncDesc(); return; } const n=e.target.closest("[data-ng]"); if(n){ newGuests.splice(+n.dataset.ng,1); drawGuests(); drawResults(); syncDesc(); } });
+    q("#fGSearch").addEventListener("input", drawResults);
+    q("#fCopyDesc").addEventListener("click", ()=>{ const v=q("#fNotes").value.trim(); if(!v){ toast("Nothing to copy yet"); return; } copyText(v, "Description copied"); });
+    q("#fAddGuest").addEventListener("click", ()=>{ const name=q("#fNewGuest").value.trim(); if(!name) return;
+      const ex = guests.find(g=>[g.name,g.artist].some(v=>(v||"").trim().toLowerCase()===name.toLowerCase()));
+      if(ex){ sel.add(ex.id); toast(`${gname(ex)} is already in your list – added`); }
+      else newGuests.push({name, role:q("#fNewRole").value});
+      q("#fNewGuest").value=""; drawGuests(); drawResults(); syncDesc(); });
+    q("#fGRes").addEventListener("click", e=>{
+      const p=e.target.closest("[data-pick]"); if(p){ sel.add(p.dataset.pick); q("#fGSearch").value=""; drawGuests(); drawResults(); syncDesc(); return; }
+      const n=e.target.closest("[data-newrole]"); if(n){ const name=q("#fGSearch").value.trim(); if(!name) return; newGuests.push({name, role:n.dataset.newrole}); q("#fGSearch").value=""; drawGuests(); drawResults(); syncDesc(); }
+    });
+    q("#fSuggest").addEventListener("click", ()=>{
+      const d = q("#fDate").value; if(!d){ q("#fErr").textContent="Pick the event date first."; return; }
+      root.querySelectorAll("[data-fdue]").forEach(i=>{ if(!i.value) i.value = addDays(d, DUE_OFF[i.dataset.fdue]); });
+    });
+    q("#fSave").addEventListener("click", async ()=>{
+      const title = q("#fTitle").value.trim(), date = q("#fDate").value;
+      if(!title || !date){ q("#fErr").textContent = "Add a name and a date."; return; }
+      if(!me && isNew){ openWho(); return; }
+      const btn = q("#fSave"); btn.disabled = true;
+      const newIds = [];
+      for(const g of newGuests){ const gid = uid(); const ok = await write(()=>db.doc("guests/"+gid).set({name:g.name, artist:"", role:g.role, phone:"", email:"", bio:"", instagram:"", facebook:"", soundcloud:"", youtube:"", website:"", style:"", folder:"", notes:""})); if(ok) newIds.push(gid); }
+      const fbLink = ev.fbLink || "";
+      const steps = {};
+      STEPS.forEach(s => { const old = ev.steps?.[s.key] || {}; steps[s.key] = {...old, done:!!old.done, by:old.by||"", at:old.at||"", due: root.querySelector(`[data-fdue="${s.key}"]`).value}; });
+      if(isNew && type==="special") steps.collect.skipped = true;
+      if(!isNew && type!=="special" && ev.type==="special" && steps.collect.skipped) steps.collect.skipped = false;
+      const fbItem = items("post").find(it=>it.group==="Facebook" && /creat/i.test(it.label));
+      if(fbLink && fbItem && !steps.post.items?.[fbItem.id]?.s){ steps.post.items = {...(steps.post.items||{}), [fbItem.id]:{s:"done",by:me||"",at:todayStr()}}; }
+      const body = {title, date, time:q("#fTime").value, endTime:q("#fEnd").value, type, location:q("#fLoc").value.trim(), fbLink,
+        guestIds:[...[...sel].filter(id=>guests.some(g=>g.id===id)), ...newIds], notes:q("#fNotes").value.trim(), steps,
+        createdBy: ev.createdBy || me || ""};
+      const id = ev.id || uid();
+      const ok = await write(()=>db.doc("events/"+id).set(body));
+      if(ok){ toast(isNew?"Event added":"Saved"); openEvent(id); } else btn.disabled=false;
+    });
+  }, null, isNew ? null : (() => openEvent(ev.id)));
+}
+
+/* ---------- guest form ---------- */
+function openGuestForm(g){
+  const isNew = !g; g = g || {role:"teacher"};
+  const evs = g.id ? events.filter(e=>(e.guestIds||[]).includes(g.id)).sort((a,b)=>b.date.localeCompare(a.date)) : [];
+  openSheet(`
+    <h2>${isNew?"Add teacher / DJ":esc(gname(g))}</h2>
+    <label class="f">Name</label><input class="in" id="gName" list="dlNames" autocomplete="off" value="${esc(g.name||"")}">
+    <label class="f">Artist name</label><input class="in" id="gArtist" list="dlArtists" autocomplete="off" placeholder="e.g. DJ Nova – used in event names & descriptions" value="${esc(g.artist||"")}">
+    <div class="hint">Leave empty to use their name.</div>
+    <div id="gDup"></div>
+    <datalist id="dlNames">${[...new Set(guests.filter(x=>x.id!==g.id).map(x=>x.name).filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join("")}</datalist>
+    <datalist id="dlArtists">${[...new Set(guests.filter(x=>x.id!==g.id).map(x=>x.artist).filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join("")}</datalist>
+    <label class="f">Role</label>
+    <select class="in" id="gRole"><option value="teacher" ${g.role==="teacher"?"selected":""}>Teacher</option><option value="dj" ${g.role==="dj"?"selected":""}>DJ</option><option value="other" ${g.role==="other"?"selected":""}>Guest</option></select>
+    <label class="f">Style / genre <span style="font-weight:400">– pick one or more</span></label>
+    <div class="chips" id="gGenres"></div>
+    <div class="row" style="margin-top:8px;flex-wrap:nowrap"><input class="in" id="gGenreNew" list="dlGenres" autocomplete="off" placeholder="Add another genre" style="flex:1;min-width:0"><button type="button" class="btn ghost small" id="gGenreAdd" style="flex:none">+ Add</button></div>
+    <datalist id="dlGenres"></datalist>
+    <label class="f">Bio</label><textarea class="in" id="gBio" style="min-height:120px" placeholder="Short bio for promo – used on Facebook, Instagram etc.">${esc(g.bio||"")}</textarea>
+    <button type="button" class="btn ghost small" data-copyfield="gBio" data-what="Bio" style="margin-top:6px">Copy bio</button>
+    <label class="f">Links</label>
+    ${[["gInsta","instagram","📸 Instagram","@handle or link"],["gFb","facebook","📘 Facebook","Profile or page link"],["gSc","soundcloud","☁️ SoundCloud","Link"],["gYt","youtube","▶️ YouTube","Channel or video link"],["gWeb","website","🌐 Website","https://…"]].map(([id,k,l,ph])=>`
+    <div class="hint" style="margin:8px 0 4px;font-weight:700;color:var(--ink)">${l}</div>
+    <div class="row" style="flex-wrap:nowrap"><input class="in" id="${id}" placeholder="${ph}" list="dl-${k}" autocomplete="off" value="${esc(g[k]||"")}" style="flex:1;min-width:0"><datalist id="dl-${k}">${[...new Set(guests.filter(x=>x.id!==g.id).map(x=>x[k]).filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join("")}</datalist><button type="button" class="btn ghost small" data-copyfield="${id}" data-what="${l.replace(/^\S+ /,"")} link" style="flex:none">Copy</button></div>`).join("")}
+    <label class="f">Notes</label><textarea class="in" id="gNotes" placeholder="Fee, travel, preferences…">${esc(g.notes||"")}</textarea>
+    <div class="grid2"><div><label class="f">Phone</label><input class="in" id="gPhone" inputmode="tel" placeholder="+45 …" value="${esc(g.phone||"")}"></div>
+    <div><label class="f">Email</label><input class="in" id="gEmail" inputmode="email" value="${esc(g.email||"")}"></div></div>
+    ${evs.length?`<label class="f">Events</label><div class="card">${evs.map(e=>`<div class="guest"><div style="flex:1">${esc(e.title)}</div><span class="meta">${esc(fmt(e.date,{day:"numeric",month:"short",year:"numeric"}))}</span></div>`).join("")}</div>`:""}
+    <div class="hint" id="gErr" style="color:var(--late)"></div>
+    ${!isNew?`<button class="btn msg block" id="gMsg" style="margin-top:12px">${MSG_ICON} Ask for bio, pictures & videos</button>`:""}
+    <div class="row" style="margin-top:10px"><button class="btn ghost" data-close>Cancel</button><button class="btn accent" id="gSave" ${!db||!canWrite?"disabled":""}>${isNew?"Add":"Save"}</button></div>
+    ${!isNew&&db&&canWrite?`<button class="btn ghost block danger" id="gDel" style="margin-top:8px">Delete guest</button>`:""}
+  `, root => {
+    root.querySelector("#gSave").addEventListener("click", async ()=>{
+      const name = root.querySelector("#gName").value.trim(); if(!name){ root.querySelector("#gErr").textContent="Add a name."; return; }
+      const body = {name, artist:root.querySelector("#gArtist").value.trim(), role:root.querySelector("#gRole").value, style:genres.join(", "), phone:root.querySelector("#gPhone").value.trim(),
+        email:root.querySelector("#gEmail").value.trim(), bio:root.querySelector("#gBio").value.trim(), instagram:root.querySelector("#gInsta").value.trim(), facebook:root.querySelector("#gFb").value.trim(), soundcloud:root.querySelector("#gSc").value.trim(), youtube:root.querySelector("#gYt").value.trim(), website:root.querySelector("#gWeb").value.trim(), folder:g.folder||"", notes:root.querySelector("#gNotes").value.trim()};
+      const ok = await write(()=>db.doc("guests/"+(g.id||uid())).set(body));
+      if(ok){ closeSheet(); toast("Saved"); }
+    });
+    // genres
+    const splitG = v => String(v||"").split(",").map(x=>x.trim()).filter(Boolean);
+    let genres = splitG(g.style);
+    const genreOpts = () => { const all=[...DEFAULT_GENRES]; guests.forEach(x=>splitG(x.style).forEach(v=>{ if(!all.some(a=>a.toLowerCase()===v.toLowerCase())) all.push(v); })); genres.forEach(v=>{ if(!all.some(a=>a.toLowerCase()===v.toLowerCase())) all.push(v); }); return all; };
+    const drawGenres = () => {
+      const shown=[...DEFAULT_GENRES]; genres.forEach(v=>{ if(!shown.some(a=>a.toLowerCase()===v.toLowerCase())) shown.push(v); });
+      root.querySelector("#gGenres").innerHTML = shown.map(v=>{ const on = genres.some(x=>x.toLowerCase()===v.toLowerCase()); return `<button type="button" class="chip ${on?"on":""}" data-genre="${esc(v)}">${on?"✓ ":""}${esc(v)}</button>`; }).join("");
+      root.querySelector("#dlGenres").innerHTML = genreOpts().filter(v=>!genres.some(x=>x.toLowerCase()===v.toLowerCase())).map(v=>`<option value="${esc(v)}">`).join("");
+    };
+    drawGenres();
+    root.querySelector("#gGenres").addEventListener("click", e=>{ const b=e.target.closest("[data-genre]"); if(!b) return; const v=b.dataset.genre; const i=genres.findIndex(x=>x.toLowerCase()===v.toLowerCase()); if(i>=0) genres.splice(i,1); else genres.push(v); drawGenres(); });
+    const addGenre = () => { const inp=root.querySelector("#gGenreNew"); splitG(inp.value).forEach(v=>{ const m=genreOpts().find(a=>a.toLowerCase()===v.toLowerCase()); const val=m||v; if(!genres.some(x=>x.toLowerCase()===val.toLowerCase())) genres.push(val); }); inp.value=""; drawGenres(); };
+    root.querySelector("#gGenreAdd").addEventListener("click", addGenre);
+    root.querySelector("#gGenreNew").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); addGenre(); } });
+    const others = guests.filter(x=>x.id!==g.id);
+    const norm = v => String(v||"").trim().toLowerCase().replace(/^@/,"").replace(/\/+$/,"");
+    const checkDup = () => {
+      const fields = [["gName","name","name"],["gArtist","artist","artist name"],["gInsta","instagram","Instagram"],["gFb","facebook","Facebook link"],["gSc","soundcloud","SoundCloud link"],["gYt","youtube","YouTube link"],["gWeb","website","website"]];
+      const hits = [];
+      fields.forEach(([id,k,label]) => { const v = norm(root.querySelector("#"+id)?.value); if(!v) return;
+        others.forEach(o => { if([o.name,o.artist].concat(k==="name"||k==="artist"?[]:[o[k]]).some(x=>norm(x)===v) && !hits.some(h=>h.o.id===o.id)) hits.push({o,label}); }); });
+      root.querySelector("#gDup").innerHTML = hits.map(({o,label})=>`<div class="note" style="border-color:var(--blue);background:#eef3ff;display:flex;align-items:center;gap:8px"><span style="flex:1">Same ${esc(label)} as <b>${esc(gname(o))}</b> (${roleLabel(o)}) – already in your list.</span><button type="button" class="btn ghost small" data-opendup="${o.id}">Open</button></div>`).join("");
+    };
+    ["gName","gArtist","gInsta","gFb","gSc","gYt","gWeb"].forEach(id => root.querySelector("#"+id)?.addEventListener("input", checkDup));
+    root.querySelector("#gDup").addEventListener("click", e => { const b=e.target.closest("[data-opendup]"); if(b) openGuestForm(guests.find(x=>x.id===b.dataset.opendup)); });
+    if(!isNew) checkDup();
+    root.querySelectorAll("[data-copyfield]").forEach(b=>b.addEventListener("click", ()=>{ const v=root.querySelector("#"+b.dataset.copyfield).value.trim(); if(!v){ toast("Nothing to copy yet"); return; } copyText(v, `${b.dataset.what} copied`); }));
+    root.querySelector("#gMsg")?.addEventListener("click", ()=>{
+      const next = events.filter(e=>(e.guestIds||[]).includes(g.id) && e.date>=todayStr()).sort((a,b)=>a.date.localeCompare(b.date))[0];
+      openNotify(`Message ${g.name}`, msgGuest(g,next), {guest:g, ev:next, back: ()=>openGuestForm(guests.find(x=>x.id===g.id)||g)});
+    });
+    const d = root.querySelector("#gDel");
+    if(d) d.addEventListener("click", async ()=>{
+      if(!d.dataset.confirm){ d.dataset.confirm="1"; d.textContent="Tap again to delete"; return; }
+      const ok = await write(()=>db.doc("guests/"+g.id).delete()); if(ok){ closeSheet(); toast("Guest deleted"); }
+    });
+  });
+}
+
+/* ---------- demo: in-memory store ---------- */
+function makeMockDb(){
+  const store = {}; let subs = [];
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const merge = (a,b) => { for(const k in b){ const v=b[k]; if(v && typeof v==="object" && !Array.isArray(v)) a[k]=merge(a[k]&&typeof a[k]==="object"?{...a[k]}:{}, v); else a[k]=v; } return a; };
+  const emit = () => subs.forEach(f=>f());
+  const meta = {fromCache:false,hasPendingWrites:false};
+  const colSnap = p => { const n=p.split("/").length+1; const docs=Object.keys(store).filter(k=>k.startsWith(p+"/")&&k.split("/").length===n).sort().map(k=>({id:k.split("/").pop(),exists:true,data:()=>store[k],metadata:meta})); return {docs,size:docs.length,empty:!docs.length,metadata:meta,docChanges:()=>[]}; };
+  const sub = f => { subs.push(f); setTimeout(f,0); return ()=>{ subs=subs.filter(x=>x!==f); }; };
+  return {
+    store, emit,
+    collection: p => ({ onSnapshot: next => sub(()=>next(colSnap(p))) }),
+    doc: p => ({
+      get: async () => ({id:p.split("/").pop(),exists:!!store[p],data:()=>store[p],metadata:meta}),
+      set: async d => { store[p]=clone(d); setTimeout(emit,0); },
+      update: async d => { if(!store[p]) throw {code:"invalid_argument"}; store[p]=merge(clone(store[p]),clone(d)); setTimeout(emit,0); },
+      delete: async () => { delete store[p]; setTimeout(emit,0); },
+      onSnapshot: next => sub(()=>next({id:p.split("/").pop(),exists:!!store[p],data:()=>store[p],metadata:meta}))
+    })
+  };
+}
+const DEMO_BY = {plan:"David",collect:"Daniel",edit:"Savan",approve:"Champ",post:"Amalie"};
+function demoBuild(date, spec){ // spec: {plan:true, collect:"all"|n|"skip", edit:..., approve:true, post:n|"all", after:n|"all"}
+  const T = todayStr(); const steps = {};
+  STEPS.forEach(s => {
+    const due = addDays(date, DUE_OFF[s.key]);
+    const st = {done:false,by:"",at:"",due,items:{}};
+    const v = spec[s.key];
+    if(v==="skip") st.skipped = true;
+    else if(s.kind==="list"){
+      const its = items(s.key); const n = v==="all" ? its.length : (v||0);
+      its.forEach((it,i)=>{ if(i<n){ const owner = it.owner && it.owner!=="Team" ? it.owner : DEMO_BY[s.key]; st.items[it.id] = {s:"done",by:owner,at:due<T?due:T}; } });
+      if(n>=its.length){ st.done=true; st.by=DEMO_BY[s.key]; st.at=due<T?due:T; }
+    } else if(v){ st.done=true; st.by=DEMO_BY[s.key]; st.at=due<T?due:T; }
+    steps[s.key] = st;
+  });
+  return steps;
+}
+function seedDemo(store){
+  const T = todayStr();
+  const folder = DRIVE;
+  const G = {
+    nova:{name:"Nora Lind",artist:"DJ Nova",role:"dj",style:"House, Funk",bio:"Copenhagen DJ mixing deep house and afro grooves for the dance floor.",soundcloud:"https://soundcloud.com/djnova-example",phone:"",email:"",instagram:"@djnova.example",folder:folder+"/DJ-Nova",notes:"Plays 2 hours. Wants set time 2 weeks before."},
+    kai:{name:"Kai Moreno",role:"teacher",style:"House, Hiphop",bio:"Kai has been dancing house for 12 years and loves teaching footwork in a playful, beginner friendly way.",youtube:"https://youtube.com/@kai.example",phone:"",email:"kai@example.com",instagram:"@kai.moves.example",folder:folder+"/Kai-Moreno",notes:"Needs a hotel for 1 night."},
+    luz:{name:"Lucia Ortiz",artist:"DJ Luz",role:"dj",style:"Soulful house",phone:"",email:"",instagram:"@djluz.example",folder:folder+"/DJ-Luz",notes:""},
+    mira:{name:"Mira Jensen",role:"teacher",style:"Popping & house",phone:"",email:"mira@example.com",instagram:"@mira.example",folder:folder+"/Mira-Jensen",notes:""},
+    tobi:{name:"Tobi",role:"teacher",style:"Freestyle / cypher host",phone:"",email:"",instagram:"@tobi.example",folder:"",notes:"No upload folder yet."}
+  };
+  Object.entries(G).forEach(([id,g])=>store["guests/"+id]=g);
+  const E = (id, days, title, type, guestIds, spec, extra={}) => {
+    const date = addDays(T, days);
+    const gs = guestIds.map(g=>G[g]);
+    const notes = namesIntoDesc(DEFAULT_DESC, gs.filter(g=>isTeacher(g)), gs.filter(g=>g.role==="dj"));
+    store["events/"+id] = {title, date, time:DEFAULT_START, endTime:DEFAULT_END, type, location:DEFAULT_WHERE, guestIds, notes, createdBy:"David", fbLink:"", steps:demoBuild(date, spec), ...extra};
+  };
+  E("e1", 56, "Fuse Point Jam// Open workshop w/ Kai Moreno and open floor w/ DJ Nova", "workshop", ["kai","nova"], {post:1}, {fbLink:"https://www.facebook.com/events/EXAMPLE"});
+  E("e2", 20, "House Foundations Workshop with Mira", "workshop", ["mira"], {plan:true, collect:"all", post:2});
+  store["events/e2"].steps.edit.due = addDays(T,-5);
+  E("e3", 35, "Freestyle Cypher with Tobi", "workshop", ["tobi"], {plan:true, collect:1, post:1});
+  store["events/e3"].steps.collect.due = addDays(T,3);
+  E("e4", 70, "Community Potluck & Open Floor", "special", [], {collect:"skip"});
+  E("e5", 28, "Winter Solstice Jam with DJ Luz", "social", ["luz"], {plan:true, collect:"all", edit:"all", post:3});
+  store["events/e5"].steps.approve.due = addDays(T,2);
+  E("e6", -20, "Autumn House Jam", "social", ["kai","nova"], {plan:true, collect:"all", edit:"all", approve:true, post:"all"});
+  E("e7", 100, "Spring House Jam with DJ Luz", "social", ["luz"], {});
+  E("e8", 150, "Footwork Weekend with Kai Moreno", "workshop", ["kai"], {});
+  store["settings/main"] = {driveLink:DRIVE, waGroup:WA_GROUP, appLink:"", stuckDays:2, messengerLink:"", fbPage:FB_PAGE, igPage:IG_PAGE};
+}
+const STAGES = {
+  new:       {post:1},
+  planned:   {plan:true, post:1},
+  collecting:{plan:true, collect:2, post:1},
+  collected: {plan:true, collect:"all", post:2},
+  edited:    {plan:true, collect:"all", edit:"all", post:2},
+  sentback:  {plan:true, collect:"all", post:2},
+  approved:  {plan:true, collect:"all", edit:"all", approve:true, post:3},
+  posted:    {plan:true, collect:"all", edit:"all", approve:true, post:"all"}
+};
+function setE1(stage){
+  const ev = demoDb.store["events/e1"]; if(!ev) return;
+  ev.steps = demoBuild(ev.date, STAGES[stage]);
+  if(stage==="sentback" || stage==="approved" || stage==="posted") ev.steps.approve.changes = [{by:"David", at:todayStr(), note:"Love it! Can the date be bigger, and use the photo where Kai is mid-spin?"}];
+  demoDb.emit();
+}
+function startDemo(name){
+  name = name || "all";
+  closeSheet(); closeWho();
+  if(!demo){ realMe = me; }
+  demoDb = makeMockDb();
+  demo = true; settings = {}; seedDemo(demoDb.store);
+  demoData = {events:[],guests:[],settings:{},photos:{},loaded:true};
+  db = demoDb; canWrite = true;
+  subscribe(demoDb, demoData, true);
+  activeTourName = name; activeTour = name==="all" ? TOUR : personalTour(name);
+  document.body.classList.add("in-demo");
+  goTour(0);
+}
+function exitDemo(){
+  closeSheet(); closeWho();
+  demo = false; tourIdx = -1; demoDb = null; demoData = null; focusId = null;
+  db = realDb; canWrite = realDb ? realCanWrite : false;
+  events = realData.events; guests = realData.guests; settings = realData.settings; photos = realData.photos||{};
+  me = realMe; tab = "tasks";
+  if(/^#demo/.test(location.hash)) try{ history.replaceState(null,"",location.pathname+location.search); }catch(_){ location.hash=""; }
+  renderTour(); render(); window.scrollTo(0,0);
+  document.body.classList.remove("in-demo");
+  if(window.FP_FIREBASE){ if(!window.__fpReady && window.fpShowGate) window.fpShowGate(); return; }
+  if(!me) openWho();
+}
+
+/* ---------- demo: guided tour ---------- */
+const evById = id => events.find(e=>e.id===id);
+function showStep(id, key){ openEvent(id); setTimeout(()=>{ const el=document.querySelector(`.sheet [data-step="${key}"]`); const sh=document.querySelector(".sheet"); if(el&&sh) sh.scrollTop = el.offsetTop - 70; }, 90); }
+const TOUR = [
+  {title:"Welcome to the demo", me:"David", tab:"plan", stage:"new",
+   text:"Everything here is made up and nothing is saved – click around freely. We'll follow one event, <b>Fuse Point Jam with Kai Moreno & DJ Nova</b>, from planning to posting."},
+  {title:"① Planning meeting · Plan tab", me:"David", tab:"plan", stage:"new",
+   text:"In the meeting you look at the next 6 months together. Coloured dates are events (purple social, blue workshop, orange special). Months without events are flagged. Tap an empty date to add one."},
+  {title:"① Add a new event", me:"David", tab:"events", stage:"new", open:()=>openEventForm(null, {date:evById("e1")?.date, guestIds:["kai","nova"]}),
+   text:"A new event starts as a <b>Workshop</b> at 14:00–17:00, Nørre Allé 7. The name is always “Fuse Point Jam// Open workshop w/ … and open floor w/ …” – pick the teacher and DJ and their names are filled in."},
+  {title:"① Scroll down: the description", me:"David", tab:"events", stage:"new", open:()=>{ openEventForm(null, {date:evById("e1")?.date, guestIds:["kai","nova"]}); setTimeout(()=>{ const n=document.querySelector("#fNotes"); const sh=document.querySelector(".sheet"); if(n&&sh) sh.scrollTop = n.offsetTop-120; },120); },
+   text:"Kai (teacher) and DJ Nova were added to the program lines automatically. On the event there's a <b>Copy description for Facebook</b> button. You can change the template in Settings → Templates."},
+  {title:"① The event's checklist", me:"David", tab:"events", stage:"new", open:()=>openEvent("e1"),
+   text:"Every event gets the same prep steps. Amalie has already ticked <b>Facebook: Event created</b>. Now it waits for <b>Plan confirmed</b>."},
+  {title:"① → Daniel & Amalie start", me:"David", tab:"events", stage:"planned", open:()=>notifyAfter(evById("e1"),"plan"),
+   text:"Guests said yes, so David taps <b>Mark done & notify</b>. The message is copied and the Messenger group opens – paste, send. Daniel and Amalie can both start now, in parallel."},
+  {title:"② Daniel's checklist", me:"Daniel", tab:"tasks", stage:"collecting", open:()=>showStep("e1","collect"),
+   text:"Daniel ticks off his own checklist. The lime button copies the upload folder link, and <b>Message</b> gives a ready-made text per guest. Anything that doesn't apply can be marked <b>Not needed</b>."},
+  {title:"② Copy-ready message for a guest", me:"Daniel", tab:"tasks", stage:"collecting", open:()=>{ const g=guests.find(x=>x.id==="nova"); openNotify("Message DJ Nova", msgGuest(g,evById("e1")), {guest:g, ev:evById("e1")}); },
+   text:"Teachers and DJs get different messages – this is the DJ version, with the Drive link filled in. Copy the message, or just the folder link, and paste it in Messenger or their Instagram DM."},
+  {title:"② Daniel's saved templates", me:"Daniel", tab:"tasks", stage:"collecting", open:()=>openTplEditor("dj","Daniel"),
+   text:"Tap your name at the top to see the team templates – anyone can edit them. This is Daniel's DJ message – words in {curly brackets} are filled in automatically. <b>Preview</b> shows the result."},
+  {title:"⑤ Meanwhile, Amalie", me:"Amalie", tab:"tasks", stage:"collecting", open:()=>showStep("e1","post"),
+   text:"Amalie doesn't wait for approval. Her checklist is split into <b>📘 Facebook</b>, <b>📸 Instagram</b> and <b>💬 WhatsApp</b> – she ticks things off in her own order, and sees whether the promo material is approved yet."},
+  {title:"⑤ Message to the WhatsApp group", me:"Amalie", tab:"tasks", stage:"collecting", open:()=>openNotify("Message to the WhatsApp group", msgGroup(evById("e1")), {wa:true}),
+   text:"<b>Message group</b> gives Amalie a ready-to-send post for your WhatsApp event group, with date, time, place, line-up and Facebook link. It's copied and the group opens. The template is editable by anyone under your name at the top."},
+  {title:"② → ③ Savan's turn", me:"Daniel", tab:"tasks", stage:"collected", open:()=>notifyAfter(evById("e1"),"collect"),
+   text:"When Daniel ticks his last item (all material received), the step completes by itself and the message for Savan pops up."},
+  {title:"③ Savan's view", me:"Savan", tab:"tasks", stage:"collected", focus:"e1",
+   text:"Savan sees the event under <b>Your turn</b>, with her own editing checklist and deadline."},
+  {title:"③ → ④ Ready for approval", me:"Savan", tab:"tasks", stage:"edited", open:()=>notifyAfter(evById("e1"),"edit"),
+   text:"Savan finishes and the team is asked to approve. Anyone can approve – Savan included."},
+  {title:"④ Send back with changes", me:"David", tab:"tasks", stage:"edited", open:()=>{ openEvent("e1"); setTimeout(()=>{ const sc=document.querySelector(".sheet .sc"); const ev=evById("e1"); if(sc&&ev){ sc.innerHTML=eventDetailHtml(ev,true); const n=sc.querySelector("#sbNote"); if(n){ n.value="Love it! Can the date be bigger, and use the photo where Kai is mid-spin?"; n.scrollIntoView({block:"center"}); } } },80); },
+   text:"David wants a tweak, so he taps <b>↩️ Send back to Savan</b> and writes what to change."},
+  {title:"④ Savan gets the note", me:"Savan", tab:"tasks", stage:"sentback", open:()=>openNotify("Tell Savan what to change", msgSendBack(evById("e1"),"Love it! Can the date be bigger, and use the photo where Kai is mid-spin?")),
+   text:"Savan is tagged with the note, her editing step reopens, and the note shows on her checklist."},
+  {title:"④ → Approved", me:"Champ", tab:"tasks", stage:"approved", open:()=>notifyAfter(evById("e1"),"approve"),
+   text:"Savan uploads the new version. Champ approves – Amalie hears the promo material is ready."},
+  {title:"⑤ Live on Facebook & Instagram 🎉", me:"Amalie", tab:"events", stage:"posted", open:()=>notifyAfter(evById("e1"),"post"),
+   text:"Amalie ticks her last item. The step completes and the team gets a 'please share' message with the Facebook and Instagram links."},
+  {title:"⚠️ When something gets stuck", me:"Champ", tab:"tasks", stage:"posted",
+   text:"<b>House Foundations Workshop</b> is 5 days past its editing deadline. It's shown at the top of My tasks for <b>everyone</b>, with a one-tap reminder."},
+  {title:"That's the whole flow", me:"David", tab:"events", stage:"posted", last:true,
+   text:"Explore freely: switch person at the top, add events, tick items. Think about: are the checklists right for each of you? Are the deadlines realistic? You can edit checklists in Settings."}
+];
+function showDesc(){ setTimeout(()=>{ const n=document.querySelector("#fNotes"); const sh=document.querySelector(".sheet"); if(n&&sh) sh.scrollTop = n.offsetTop-120; },140); }
+function personalTour(P){
+  const G = id => guests.find(x=>x.id===id);
+  const end = {title:"That's it! 🎉", tab:"tasks", stage:"posted", last:true,
+    text:`That's your part of the flow, ${P}. Explore freely – nothing here is saved. You can take this tour again anytime from Settings → See how it works.`};
+  const T = {
+    planner: [
+      {title:`Hi ${P}! 👋`, tab:"tasks", stage:"new", text:`This is your own short tour. As a planner you add the events, confirm plans and help approve material. Everything here is made up – click around freely.`},
+      {title:"Plan the half year", tab:"plan", stage:"new", text:"In the planning meeting, use the <b>Plan</b> tab: the next 6 months, how many workshops/socials/special events, and months with nothing planned. Tap an empty date to add an event there."},
+      {title:"Add an event", tab:"events", stage:"new", open:()=>openEventForm(null,{date:evById("e1")?.date, guestIds:["kai","nova"]}),
+       text:"Name, time, place and description are filled in for you. <b>Search</b> for saved teachers & DJs, or add a new one in the box below – their artist name goes into the event name automatically."},
+      {title:"The description fills itself", tab:"events", stage:"new", open:()=>{ openEventForm(null,{date:evById("e1")?.date, guestIds:["kai","nova"]}); showDesc(); },
+       text:"Each teacher and DJ gets their own 🔻🔻🔻 block with their <b>bio and links</b> – ready to copy into Facebook."},
+      {title:"Confirm the plan", tab:"events", stage:"new", open:()=>showStep("e1","plan"),
+       text:"When the guests have said yes, tap <b>Mark done & notify</b>. Anyone can also tick any checkbox on the event at any time – your name shows on what you tick."},
+      {title:"Tell Daniel & Amalie", tab:"events", stage:"planned", open:()=>notifyAfter(evById("e1"),"plan"),
+       text:"A ready message is made for you. <b>Copy & open Messenger</b>, paste, send – type @ and pick the names to make real tags."},
+      {title:"Team to-dos", tab:"tasks", stage:"edited", focus:"e1", text:"Shared jobs land under <b>Team to-dos</b> – like approving Savan's edited material. Whoever gets there first."},
+      {title:"Approve or send back", tab:"tasks", stage:"edited", open:()=>{ openEvent("e1"); setTimeout(()=>{ const sc=document.querySelector(".sheet .sc"); const ev=evById("e1"); if(sc&&ev){ sc.innerHTML=eventDetailHtml(ev,true); const n=sc.querySelector("#sbNote"); if(n){ n.value="Love it! Can the date be bigger?"; n.scrollIntoView({block:"center"}); } } },90); },
+       text:"Look at the material in Drive, then <b>Approve</b> (Amalie is told) or <b>Send back to Savan</b> with a short note."},
+      {title:"When something gets stuck", tab:"tasks", stage:"edited", open:()=>{ const ev=evById("e2"); if(ev) openNotify("Send a reminder", msgReminder(ev)); },
+       text:"Steps that are 2+ days late show under <b>⚠️ Needs attention</b> for everyone. One tap makes a friendly reminder."},
+      {title:"Your profile & templates", tab:"tasks", stage:"edited", open:()=>openProfile(P),
+       text:"Tap your name at the top: add your <b>photo</b>, switch person, and edit the team's message templates and event description."},
+      end],
+    Daniel: [
+      {title:"Hi Daniel! 👋", tab:"tasks", stage:"new", text:"This is your own short tour. Your job: contact teachers, DJs and guests and collect their bio, links, pictures and videos. Everything here is made up."},
+      {title:"Your turn", tab:"tasks", stage:"planned", focus:"e1", text:"When a plan is confirmed you get a message in Messenger, and the event shows under <b>Your turn</b> with your deadline."},
+      {title:"Your checklist", tab:"tasks", stage:"planned", open:()=>showStep("e1","collect"),
+       text:"Tick things off as you go – or use <b>Check all</b>. Mark anything that doesn't apply as <b>Not needed</b>. The lime button copies the Drive upload link."},
+      {title:"Message a teacher", tab:"tasks", stage:"planned", open:()=>{ const g=G("kai"); openNotify(`Message ${g.name}`, msgGuest(g,evById("e1")), {guest:g, ev:evById("e1")}); },
+       text:"Tap <b>Message</b> next to a guest: a ready text asking for bio, links and pictures. Copy it, paste in Messenger – or open their Instagram DM."},
+      {title:"DJs get their own text", tab:"tasks", stage:"planned", open:()=>{ const g=G("nova"); openNotify(`Message ${g.name}`, msgGuest(g,evById("e1")), {guest:g, ev:evById("e1")}); },
+       text:"DJs and guests (talks, panels…) each get a message that fits them."},
+      {title:"Teachers & DJs", tab:"guests", stage:"planned", text:"The <b>Guests</b> tab is your contact list. Filter by Teachers / DJs / Guests, sort, and search by name, artist name or genre."},
+      {title:"Save what they send", tab:"guests", stage:"planned", open:()=>openGuestForm(G("nova")),
+       text:"Add their <b>artist name</b>, genres, <b>bio</b> and links. They're filled into event names and descriptions automatically. You'll be warned if someone is already in the list."},
+      {title:"Done → Savan is told", tab:"tasks", stage:"collected", open:()=>notifyAfter(evById("e1"),"collect"),
+       text:"When your last box is ticked, the message for Savan pops up with the Drive link. Copy & send."},
+      {title:"Your templates", tab:"tasks", stage:"collected", open:()=>openTplEditor("teacher","Daniel"),
+       text:"Change your teacher, DJ and guest messages anytime: tap your name → Team templates. {guest} becomes their name."},
+      end],
+    Savan: [
+      {title:"Hi Savan! 👋", tab:"tasks", stage:"new", text:"This is your own short tour. Your job: edit the promo pictures and videos once the material is in. Everything here is made up."},
+      {title:"Your turn", tab:"tasks", stage:"collected", focus:"e1", text:"When Daniel has collected everything, you get a message and the event shows under <b>Your turn</b> with your deadline."},
+      {title:"Your editing checklist", tab:"tasks", stage:"collected", open:()=>showStep("e1","edit"),
+       text:"The pictures are in the Drive folder. Tick things off as you finish them – or <b>Check all</b>."},
+      {title:"Done → ask for approval", tab:"tasks", stage:"edited", open:()=>notifyAfter(evById("e1"),"edit"),
+       text:"When your last box is ticked, a message asking the others to approve pops up. Copy & send."},
+      {title:"If changes are needed", tab:"tasks", stage:"sentback", open:()=>showStep("e1","edit"),
+       text:"If someone sends it back, your step reopens with their note right on your checklist."},
+      {title:"You can approve too", tab:"tasks", stage:"posted", open:()=>showStep("e5","approve"),
+       text:"Anyone can approve material – you included. You can also tick any checkbox on an event; your name shows next to it."},
+      {title:"Your profile", tab:"tasks", stage:"posted", open:()=>openProfile("Savan"),
+       text:"Tap your name at the top to add your <b>photo</b> and see the team templates."},
+      end],
+    Amalie: [
+      {title:"Hi Amalie! 👋", tab:"tasks", stage:"new", text:"This is your own short tour. Your job: get the event out on Facebook, Instagram and the WhatsApp group. Everything here is made up."},
+      {title:"You start early", tab:"tasks", stage:"planned", focus:"e1", text:"As soon as the plan is confirmed the event shows under <b>Your turn</b> – you don't have to wait for approval."},
+      {title:"Your checklist", tab:"tasks", stage:"planned", open:()=>showStep("e1","post"),
+       text:"Split into 📘 Facebook, 📸 Instagram and 💬 WhatsApp. Tick in your own order, use <b>Check all</b>, or mark things <b>Not needed</b>. It also shows if the promo material is approved yet."},
+      {title:"Copy the description", tab:"tasks", stage:"planned", open:()=>openEvent("e1"),
+       text:"The full event text – program, artists' bios & links and the guidelines – is ready. Tap <b>Copy description for Facebook</b>."},
+      {title:"Bios & links", tab:"guests", stage:"planned", open:()=>openGuestForm(G("nova")),
+       text:"Need just one artist's bio or link for a post? Open them in <b>Guests</b> and tap <b>Copy</b>."},
+      {title:"Promo material is ready", tab:"tasks", stage:"approved", open:()=>notifyAfter(evById("e1"),"approve"),
+       text:"When the edited material is approved, you get this message with the Drive link."},
+      {title:"Message the WhatsApp group", tab:"tasks", stage:"approved", open:()=>openNotify("Message to the WhatsApp group", msgGroup(evById("e1")), {wa:true}),
+       text:"<b>Message group</b> in your checklist makes a ready post with date, time, place and line-up – copied, and the group opens."},
+      {title:"It's live 🎉", tab:"events", stage:"posted", open:()=>notifyAfter(evById("e1"),"post"),
+       text:"Tick your last box and a 'please share' message for the team pops up with the Facebook and Instagram links."},
+      {title:"Your template", tab:"tasks", stage:"posted", open:()=>openTplEditor("group","Amalie"),
+       text:"Change the WhatsApp group message anytime: tap your name → Team templates."},
+      end]
+  };
+  const steps = (P==="David"||P==="Champ") ? T.planner : (T[P] || T.planner);
+  return steps.map(st => ({...st, me:P}));
+}
+function goTour(i){
+  tourIdx = i; const st = activeTour[i];
+  closeSheet(); closeWho();
+  me = st.me; tab = st.tab; evFilter = "upcoming"; focusId = st.focus || null;
+  setE1(st.stage);
+  render(); renderTour(); window.scrollTo(0,0);
+  if(st.open) setTimeout(()=>{ if(tourIdx===i) st.open(); }, 60);
+  if(st.focus) setTimeout(()=>{ const c=document.querySelector(`#view .card[data-ev="${st.focus}"]`); if(c && tourIdx===i){ const y=c.getBoundingClientRect().top+window.scrollY-(parseInt(getComputedStyle(document.documentElement).getPropertyValue("--tourH"))||0)-70; window.scrollTo({top:Math.max(0,y),behavior:"smooth"}); } }, 120);
+}
+function renderTour(){
+  const el = $("#tour");
+  if(!demo){ el.innerHTML=""; setTourH(); return; }
+  if(tourIdx<0){
+    el.innerHTML = `<div class="tc"><div class="strip"><span>🧪 <b>Demo</b> · nothing is saved</span><button data-tour="restart">Restart tour</button><button data-tour="exit">Exit</button></div></div>`;
+  } else {
+    const st = activeTour[tourIdx];
+    el.innerHTML = `<div class="tc">
+      <div class="tk"><span>${activeTourName==="all"?"Team demo":`${esc(activeTourName)}'s tour`} · ${tourIdx+1}/${activeTour.length}${activeTourName==="all"?` · as ${esc(st.me)}`:""}</span><button data-tour="exit">Exit demo</button></div>
+      <h3>${st.title}</h3><p>${st.text}</p>
+      <div class="tb">${tourIdx>0?`<button class="back" data-tour="back">Back</button>`:""}<div class="bar"><i style="width:${Math.round((tourIdx+1)/activeTour.length*100)}%"></i></div>
+      ${st.last?`<button class="back" data-tour="free">Explore</button><button class="nx" data-tour="exit">Exit demo</button>`:`<button class="nx" data-tour="next">${tourIdx===0?"Start":"Next"}</button>`}</div>
+    </div>`;
+  }
+  setTourH();
+}
+function setTourH(){ requestAnimationFrame(()=>{ const c=$("#tour .tc"); document.documentElement.style.setProperty("--tourH", c ? (c.offsetHeight+8)+"px" : "0px"); }); }
+window.addEventListener("resize", setTourH);
+$("#tour").addEventListener("click", e => {
+  const a = e.target.closest("[data-tour]")?.dataset.tour; if(!a) return;
+  if(a==="next" && tourIdx<activeTour.length-1) goTour(tourIdx+1);
+  if(a==="back" && tourIdx>0) goTour(tourIdx-1);
+  if(a==="free"){ tourIdx=-1; focusId=null; closeSheet(); renderTour(); render(); }
+  if(a==="restart"){ startDemo(activeTourName); }
+  if(a==="exit") exitDemo();
+});
+
+/* ---------- global events ---------- */
+document.addEventListener("click", e => { if(e.target.closest("[data-signout]") && window.fpSignOut) window.fpSignOut(); }, true);
+document.addEventListener("click", async e => {
+  if(e.target.closest("#layer") || e.target.closest(".who") || e.target.closest("#tour")) return;
+  const tb = e.target.closest("[data-tab]"); if(tb){ const nt = tb.dataset.tab; if(nt!==tab){ tab = nt; render(); window.scrollTo(0,0); if(!demo) navPush("tab-"+nt); } else { window.scrollTo(0,0); } return; }
+  if(e.target.closest("#meBtn")){ me ? openProfile(me) : openWho(); return; }
+  if(e.target.closest('[data-act="who"]')){ openWho(); return; }
+  const pf = e.target.closest("[data-profile]"); if(pf){ openProfile(pf.dataset.profile); return; }
+  if(e.target.closest("[data-desc]")){ openDescEditor(); return; }
+  const ss = e.target.closest("[data-sset]"); if(ss){ openSettingsSection(ss.dataset.sset); return; }
+  const f = e.target.closest("[data-filter]"); if(f){ evFilter=f.dataset.filter; render(); return; }
+  const gf = e.target.closest("[data-gfold]"); if(gf){ const k=gf.dataset.gfold; guestFold.has(k)?guestFold.delete(k):guestFold.add(k); render(); return; }
+  const ga = e.target.closest("[data-gall]"); if(ga){ const k=ga.dataset.gall; guestOpen.has(k)?guestOpen.delete(k):guestOpen.add(k); render(); return; }
+  const rm = e.target.closest("[data-remindev]"); if(rm){ const ev=events.find(x=>x.id===rm.dataset.remindev); if(ev) openNotify("Send a reminder", msgReminder(ev)); return; }
+  const nd = e.target.closest("[data-newdate]"); if(nd){ openEventForm({date:nd.dataset.newdate}); return; }
+  const evc = e.target.closest("[data-ev]"); if(evc){ openEvent(evc.dataset.ev); return; }
+  const gc = e.target.closest("[data-guest]"); if(gc){ openGuestForm(guests.find(g=>g.id===gc.dataset.guest)); return; }
+  const act = e.target.closest("[data-act]")?.dataset.act;
+  if(act==="newEvent") openEventForm();
+  if(act==="newGuest") openGuestForm();
+  if(act==="startDemo") startDemo("all");
+  if(act==="restartTour") startDemo(activeTourName);
+  if(act==="myTour"){ if(!me){ openWho(); return; } startDemo(me); }
+  if(act==="hideTourHint"){ try{ localStorage.setItem("fp_tourhint_"+me,"1"); }catch(_){ } render(); }
+  if(act==="exitDemo") exitDemo();
+});
+document.addEventListener("change", e => {
+  if(e.target.closest("#layer")) return;
+  if(e.target.id==="gSort"){ guestSort = e.target.value; render(); return; }
+  const i = e.target.closest("[data-photofor]"); if(i) setPhoto(i.dataset.photofor, i.files[0]);
+});
+document.addEventListener("input", e => {
+  if(e.target.id==="gSearch"){ guestQuery = e.target.value; const pos=e.target.selectionStart; render(); const s=$("#gSearch"); s.focus(); try{s.setSelectionRange(pos,pos);}catch(_){} }
+});
+
+setTimeout(()=>document.getElementById("splash")?.remove(), 1700);
+{ const m0 = location.hash.match(/^#tab-(tasks|plan|events|guests|settings)$/); if(m0) tab = m0[1]; }
+render();
+const hashTour = (location.hash.match(/^#demo-(david|champ|daniel|amalie|savan)$/i)||[])[1];
+if(hashTour){ startDemo(hashTour[0].toUpperCase()+hashTour.slice(1).toLowerCase()); }
+else if(location.hash==="#demo"){ startDemo("all"); }
+else if(!me && !window.FP_FIREBASE) openWho();
+window.fpSetMe = n => { me = n; realMe = n; try{ localStorage.setItem("fp_me", n); }catch(_){ } if(!demo){ render(); } };
+initDb();
+</script>
+<script type="module" src="firebase-gate.js"></script>
+<script>
+if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js").catch(function(){});
+</script>
+</body>
+</html>

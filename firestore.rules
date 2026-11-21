@@ -1,0 +1,56 @@
+rules_version = '2';
+// Fuse Point – Workflow · Firestore security rules
+// Paste this whole file into Firebase console → Firestore Database → Rules → Publish.
+//
+// Who can get in:
+//   1. signed in with a Google account whose email is on the team list (access/team), AND
+//   2. has entered the current team PIN on that device (unlocked/{uid} holds the PIN they typed).
+// Changing the PIN locks everyone out until they type the new one.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null && request.auth.token.email != null; }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function teamPath() { return /databases/$(database)/documents/access/team; }
+    function pinPath() { return /databases/$(database)/documents/access/pin; }
+    function unlockPath() { return /databases/$(database)/documents/unlocked/$(request.auth.uid); }
+    function setUp() { return exists(teamPath()); }
+    function isTeam() { return signedIn() && setUp() && myEmail() in get(teamPath()).data.emails; }
+    function isAdmin() { return isTeam() && myEmail() in get(teamPath()).data.admins; }
+    function pinOk() { return exists(unlockPath()) && get(unlockPath()).data.pin == get(pinPath()).data.value; }
+
+    // Team list: readable by the team; created once at first-time setup; changed only by the admin.
+    match /access/team {
+      allow read: if (signedIn() && !setUp()) || isTeam();
+      allow create: if signedIn() && !setUp()
+        && request.resource.data.admins.size() == 1
+        && request.resource.data.admins[0] == myEmail()
+        && myEmail() in request.resource.data.emails;
+      allow update: if isAdmin() && pinOk() && myEmail() in request.resource.data.admins;
+      allow delete: if false;
+    }
+
+    // Team PIN: nobody can read it; set at first-time setup; changed only by the admin.
+    match /access/pin {
+      allow read: if false;
+      allow create: if signedIn() && !setUp() && request.resource.data.value is string
+        && request.resource.data.value.matches('[0-9]{4,8}');
+      allow update: if isAdmin() && pinOk() && request.resource.data.value is string
+        && request.resource.data.value.matches('[0-9]{4,8}');
+      allow delete: if false;
+    }
+
+    // "This device has the PIN": a team member can only write their own, and only with the right PIN.
+    match /unlocked/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create, update: if isTeam() && request.auth.uid == uid
+        && request.resource.data.pin == getAfter(pinPath()).data.value;
+      allow delete: if signedIn() && request.auth.uid == uid;
+    }
+
+    // Everything else (events, guests, settings, member photos): team members with the current PIN.
+    match /{coll}/{rest=**} {
+      allow read, write: if coll != 'access' && coll != 'unlocked' && isTeam() && pinOk();
+    }
+  }
+}
