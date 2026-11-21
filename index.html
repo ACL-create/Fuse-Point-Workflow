@@ -907,6 +907,7 @@ function renderSettings(){
     ${row("checklists","☑️","Checklists",`Daniel ${nItems("collect")} · Savan ${nItems("edit")} · Amalie ${nItems("post")} items`)}
     ${row("team","👥","Team",`<span class="avrow">${MEMBERS.map(n=>av(n,1)).join("")}</span>`)}
     ${row("templates","📝","Templates","Messages to teachers, DJs, guests & WhatsApp · Event description")}
+    ${!window.FP_FIREBASE && !demo ? row("export","📦","Move data to the new app",`Copy ${guests.length} teachers & DJs, ${events.length} events & settings`) : ""}
     ${window.FP_FIREBASE && !demo ? row("access","🔐","Access","Team emails & PIN"+(window.fpIsAdmin?" · you're the admin":"")) : ""}
   </div>
   <div class="section-title"><h2>On this device</h2></div>
@@ -921,10 +922,12 @@ function openAccessSection(){
     ${admin?`<button class="btn block" style="margin-top:12px" id="aSave">Save team emails</button>
     <label class="f" style="margin-top:18px">New team PIN (4–8 digits)</label><input class="in" id="aPin" inputmode="numeric" type="password" maxlength="8">
     <div class="hint">Changing the PIN asks everyone to type the new one – useful when someone leaves.</div>
-    <button class="btn ghost block" style="margin-top:8px" id="aPinSave">Change PIN</button>`:""}
+    <button class="btn ghost block" style="margin-top:8px" id="aPinSave">Change PIN</button>
+    <button class="btn ghost block" style="margin-top:18px" id="aImport">📥 Import from the old app</button>`:""}
     <div class="hint" id="aErr" style="color:var(--late)"></div>
     <button class="btn ghost block" style="margin-top:14px" data-signout="1">Sign out of this phone</button>
     <button class="btn ghost block" style="margin-top:8px" data-close>‹ Back to settings</button>`, root => {
+    root.querySelector("#aImport")?.addEventListener("click", openImportSection);
     root.querySelector("#aSave")?.addEventListener("click", async ()=>{
       const names = {}; root.querySelectorAll("[data-accmail]").forEach(i=>{ const v=i.value.trim().toLowerCase(); if(v) names[v]=i.dataset.accmail; });
       try{ await window.fpSaveTeam(names); toast("Team emails saved"); }catch(e){ root.querySelector("#aErr").textContent = "Couldn't save: "+(e.message||e.code||e); }
@@ -935,8 +938,50 @@ function openAccessSection(){
     });
   });
 }
+function openExportSection(){
+  const pack = {fusepoint:1, exported:new Date().toISOString(),
+    guests: realData.guests.map(({id,...d})=>({id, data:d})),
+    events: realData.events.map(({id,...d})=>({id, data:d})),
+    settings: realData.settings || {}};
+  const txt = JSON.stringify(pack);
+  openSheet(`<h2>📦 Move data to the new app</h2>
+    <p class="meta">This copies all ${pack.guests.length} teachers & DJs, ${pack.events.length} events and your settings. Then open the new app → Settings → 🔐 Access → <b>Import from the old app</b> and paste.</p>
+    <button class="btn lime block" style="margin-top:12px" id="xCopy">📋 Copy all data</button>
+    <label class="f">Or select and copy this text yourself</label>
+    <textarea class="in" id="xText" readonly style="min-height:140px;font-size:12px">${esc(txt)}</textarea>
+    <button class="btn ghost block" style="margin-top:8px" data-close>‹ Back to settings</button>`, root => {
+    root.querySelector("#xCopy").addEventListener("click", async ()=>{ const ta=root.querySelector("#xText"); try{ await navigator.clipboard.writeText(txt); toast("Copied – now paste it in the new app"); }catch(e){ ta.focus(); ta.select(); toast("Select all the text and copy it"); } });
+  });
+}
+function openImportSection(){
+  openSheet(`<h2>📥 Import from the old app</h2>
+    <p class="meta">In the old Claude version: Settings → 📦 Move data to the new app → <b>Copy all data</b>. Then paste it here. Teachers, DJs and events already here with the same entry are updated, nothing is deleted.</p>
+    <textarea class="in" id="iText" style="min-height:160px;font-size:12px" placeholder="Paste here"></textarea>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:14px"><input type="checkbox" id="iSet" checked> Also import settings, checklists & templates</label>
+    <div class="hint" id="iMsg"></div>
+    <button class="btn block" style="margin-top:12px" id="iGo">Import</button>
+    <button class="btn ghost block" style="margin-top:8px" data-close>‹ Back</button>`, root => {
+    root.querySelector("#iGo").addEventListener("click", async ()=>{
+      const msg = root.querySelector("#iMsg"), btn = root.querySelector("#iGo");
+      let pack; try{ pack = JSON.parse(root.querySelector("#iText").value.trim()); }catch(e){ msg.textContent="That doesn't look like the copied data – try copying again."; return; }
+      if(!pack || pack.fusepoint!==1 || !Array.isArray(pack.guests)){ msg.textContent="That doesn't look like the copied data – try copying again."; return; }
+      btn.disabled = true; let n = 0; const total = pack.guests.length + (pack.events||[]).length;
+      try{
+        for(const g of pack.guests){ await db.doc("guests/"+g.id).set(g.data); n++; msg.textContent = `Importing… ${n}/${total}`; }
+        for(const e of (pack.events||[])){ await db.doc("events/"+e.id).set(e.data); n++; msg.textContent = `Importing… ${n}/${total}`; }
+        if(root.querySelector("#iSet").checked && pack.settings){
+          const keep = {...settings}; const imp = {...pack.settings}; delete imp.appLink;
+          Object.keys(imp).forEach(k=>{ if(imp[k]==="" || imp[k]==null) delete imp[k]; });
+          await db.doc("settings/main").set({...keep, ...imp});
+        }
+        msg.textContent = `Done ✓ ${pack.guests.length} teachers & DJs and ${(pack.events||[]).length} events imported.`; toast("Import done");
+      }catch(e){ msg.textContent = `Stopped after ${n}/${total}: `+(e.message||e.code||e); btn.disabled = false; }
+    });
+  });
+}
 function openSettingsSection(k){
   if(k==="access"){ openAccessSection(); return; }
+  if(k==="export"){ openExportSection(); return; }
   const editable = db && canWrite; const dis = editable ? "" : "disabled";
   const tplText = key => esc(((settings.templates && settings.templates[key]) || DEFAULT_TPL[key]).join("\n"));
   const back = `<button class="btn ghost block" style="margin-top:8px" data-close>‹ Back to settings</button>`;
